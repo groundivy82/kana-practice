@@ -132,6 +132,15 @@ h2{margin:0;font-size:1.3rem}
 .tok.right,.s-ans.right .tok{border-color:var(--ok);background:var(--ok-soft)}
 .tok.wrong{border-color:var(--bad);background:var(--bad-soft);text-decoration:line-through}
 
+/* talk */
+.chat{display:flex;flex-direction:column;gap:10px}
+.bub{max-width:88%;padding:10px 14px;border-radius:16px;border:2px solid var(--line);background:var(--surface);display:flex;flex-direction:column;gap:2px}
+.bub.a{align-self:flex-start;border-bottom-left-radius:4px}
+.bub.b{align-self:flex-end;background:var(--primary-soft);border-color:var(--primary);border-bottom-right-radius:4px}
+.bub-t{border:0;background:transparent;padding:0;text-align:left;font-family:var(--font-kana);font-size:1.25rem;font-weight:500}
+.bub-ko{font-size:.85rem;color:var(--muted)}
+.s-ko.sm{font-size:1.15rem}
+
 /* quit sheet */
 .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;justify-content:center;z-index:20}
 .sheet{width:100%;max-width:560px;background:var(--surface);border-radius:20px 20px 0 0;padding:20px 16px;
@@ -177,31 +186,242 @@ h2{margin:0;font-size:1.3rem}
     { id: 'u12', name: '반탁음 ぱ행', rows: ['pa'] }
   ];
   var TOTAL = 10;
-  /* 문장 만들기: 히라가나만 쓴 쉬운 문장. w = 단어 단위 조각 */
+  /* 문장 만들기: 히라가나만 쓴 쉬운 문장 (작은 ゃゅょっ·장음 없이). w = 단어 단위 조각 */
   var SENTS = [
+    /* 이것은 ~입니다 */
     { ko: '저는 학생입니다', w: ['わたし', 'は', 'がくせい', 'です'] },
     { ko: '이것은 책입니다', w: ['これ', 'は', 'ほん', 'です'] },
     { ko: '이것은 사과입니다', w: ['これ', 'は', 'りんご', 'です'] },
     { ko: '이것은 우산입니다', w: ['これ', 'は', 'かさ', 'です'] },
+    { ko: '이것은 펜입니다', w: ['これ', 'は', 'ぺん', 'です'] },
     { ko: '이것은 제 가방입니다', w: ['これ', 'は', 'わたし', 'の', 'かばん', 'です'] },
+    { ko: '이것은 제 책상입니다', w: ['これ', 'は', 'わたし', 'の', 'つくえ', 'です'] },
+    { ko: '그것은 시계입니다', w: ['それ', 'は', 'とけい', 'です'] },
+    { ko: '저것은 산입니다', w: ['あれ', 'は', 'やま', 'です'] },
+    { ko: '저 사람은 선생님입니다', w: ['あの', 'ひと', 'は', 'せんせい', 'です'] },
+    { ko: '선생님은 유명합니다', w: ['せんせい', 'は', 'ゆうめい', 'です'] },
+    /* 형용사 */
     { ko: '개는 귀엽습니다', w: ['いぬ', 'は', 'かわいい', 'です'] },
     { ko: '바다는 큽니다', w: ['うみ', 'は', 'おおきい', 'です'] },
     { ko: '하늘은 파랗습니다', w: ['そら', 'は', 'あおい', 'です'] },
     { ko: '꽃이 예쁩니다', w: ['はな', 'が', 'きれい', 'です'] },
+    { ko: '달이 예쁩니다', w: ['つき', 'が', 'きれい', 'です'] },
+    { ko: '이것은 맛있습니다', w: ['これ', 'は', 'おいしい', 'です'] },
+    { ko: '이 집은 새것입니다', w: ['この', 'いえ', 'は', 'あたらしい', 'です'] },
+    { ko: '이 차는 비쌉니다', w: ['この', 'くるま', 'は', 'たかい', 'です'] },
+    { ko: '이 가방은 쌉니다', w: ['この', 'かばん', 'は', 'やすい', 'です'] },
+    { ko: '이 길은 깁니다', w: ['この', 'みち', 'は', 'ながい', 'です'] },
+    { ko: '이 꽃은 빨갛습니다', w: ['この', 'はな', 'は', 'あかい', 'です'] },
+    { ko: '눈은 하얗습니다', w: ['ゆき', 'は', 'しろい', 'です'] },
+    { ko: '여름은 덥습니다', w: ['なつ', 'は', 'あつい', 'です'] },
+    { ko: '겨울은 춥습니다', w: ['ふゆ', 'は', 'さむい', 'です'] },
+    { ko: '차는 빠릅니다', w: ['くるま', 'は', 'はやい', 'です'] },
+    { ko: '여기는 조용합니다', w: ['ここ', 'は', 'しずか', 'です'] },
+    { ko: '저는 즐겁습니다', w: ['わたし', 'は', 'たのしい', 'です'] },
+    { ko: '저는 건강합니다', w: ['わたし', 'は', 'げんき', 'です'] },
+    { ko: '어머니는 상냥합니다', w: ['おかあさん', 'は', 'やさしい', 'です'] },
+    /* 있습니다 / 날씨 */
     { ko: '고양이가 있습니다', w: ['ねこ', 'が', 'います'] },
+    { ko: '방에 고양이가 있습니다', w: ['へや', 'に', 'ねこ', 'が', 'います'] },
+    { ko: '집에 개가 있습니다', w: ['うち', 'に', 'いぬ', 'が', 'います'] },
+    { ko: '친구는 집에 있습니다', w: ['ともだち', 'は', 'うち', 'に', 'います'] },
+    { ko: '저는 가족이 있습니다', w: ['わたし', 'は', 'かぞく', 'が', 'います'] },
+    { ko: '새가 나무 위에 있습니다', w: ['とり', 'が', 'き', 'の', 'うえ', 'に', 'います'] },
+    { ko: '저는 우산이 있습니다', w: ['わたし', 'は', 'かさ', 'が', 'あります'] },
+    { ko: '하늘에 별이 있습니다', w: ['そら', 'に', 'ほし', 'が', 'あります'] },
+    { ko: '별이 있습니다', w: ['ほし', 'が', 'あります'] },
+    { ko: '책상 위에 책이 있습니다', w: ['つくえ', 'の', 'うえ', 'に', 'ほん', 'が', 'あります'] },
+    { ko: '거기에 산이 있습니다', w: ['そこ', 'に', 'やま', 'が', 'あります'] },
+    { ko: '비가 옵니다', w: ['あめ', 'が', 'ふります'] },
+    { ko: '눈이 옵니다', w: ['ゆき', 'が', 'ふります'] },
+    { ko: '바람이 붑니다', w: ['かぜ', 'が', 'ふきます'] },
+    { ko: '새가 웁니다', w: ['とり', 'が', 'なきます'] },
+    { ko: '내일은 비가 옵니다', w: ['あした', 'は', 'あめ', 'が', 'ふります'] },
+    { ko: '어제는 비가 왔습니다', w: ['きのう', 'は', 'あめ', 'が', 'ふりました'] },
+    /* 먹다·마시다·좋아하다 */
     { ko: '저는 밥을 먹습니다', w: ['わたし', 'は', 'ごはん', 'を', 'たべます'] },
+    { ko: '저는 빵을 먹습니다', w: ['わたし', 'は', 'ぱん', 'を', 'たべます'] },
+    { ko: '저는 귤을 먹습니다', w: ['わたし', 'は', 'みかん', 'を', 'たべます'] },
+    { ko: '저는 계란을 먹습니다', w: ['わたし', 'は', 'たまご', 'を', 'たべます'] },
+    { ko: '저는 초밥을 먹습니다', w: ['わたし', 'は', 'すし', 'を', 'たべます'] },
+    { ko: '지금 밥을 먹습니다', w: ['いま', 'ごはん', 'を', 'たべます'] },
     { ko: '저는 물을 마십니다', w: ['わたし', 'は', 'みず', 'を', 'のみます'] },
+    { ko: '저는 물을 좋아합니다', w: ['わたし', 'は', 'みず', 'が', 'すきです'] },
+    { ko: '저는 생선을 좋아합니다', w: ['わたし', 'は', 'さかな', 'が', 'すきです'] },
+    { ko: '저는 야채를 좋아합니다', w: ['わたし', 'は', 'やさい', 'が', 'すきです'] },
+    { ko: '저는 과일을 좋아합니다', w: ['わたし', 'は', 'くだもの', 'が', 'すきです'] },
+    { ko: '저는 개를 좋아합니다', w: ['わたし', 'は', 'いぬ', 'が', 'すきです'] },
+    { ko: '저는 고양이를 좋아합니다', w: ['わたし', 'は', 'ねこ', 'が', 'すきです'] },
+    /* 하루 생활 */
     { ko: '저는 책을 읽습니다', w: ['わたし', 'は', 'ほん', 'を', 'よみます'] },
+    { ko: '저는 어제 책을 읽었습니다', w: ['わたし', 'は', 'きのう', 'ほん', 'を', 'よみました'] },
     { ko: '저는 음악을 듣습니다', w: ['わたし', 'は', 'おんがく', 'を', 'ききます'] },
     { ko: '저는 노래를 부릅니다', w: ['わたし', 'は', 'うた', 'を', 'うたいます'] },
+    { ko: '저는 편지를 씁니다', w: ['わたし', 'は', 'てがみ', 'を', 'かきます'] },
+    { ko: '저는 일본어를 배웁니다', w: ['わたし', 'は', 'にほんご', 'を', 'ならいます'] },
+    { ko: '저는 아침에 일어납니다', w: ['わたし', 'は', 'あさ', 'に', 'おきます'] },
+    { ko: '저는 밤에 잡니다', w: ['わたし', 'は', 'よる', 'に', 'ねます'] },
     { ko: '저는 집에 돌아갑니다', w: ['わたし', 'は', 'うち', 'に', 'かえります'] },
-    { ko: '저는 차를 좋아합니다', w: ['わたし', 'は', 'おちゃ', 'が', 'すきです'] },
-    { ko: '저는 생선을 좋아합니다', w: ['わたし', 'は', 'さかな', 'が', 'すきです'] },
-    { ko: '비가 옵니다', w: ['あめ', 'が', 'ふります'] },
-    { ko: '새가 웁니다', w: ['とり', 'が', 'なきます'] },
-    { ko: '거기에 산이 있습니다', w: ['そこ', 'に', 'やま', 'が', 'あります'] }
+    { ko: '저는 역에 갑니다', w: ['わたし', 'は', 'えき', 'に', 'いきます'] },
+    { ko: '저는 내일 갑니다', w: ['わたし', 'は', 'あした', 'いきます'] },
+    { ko: '저는 차를 탑니다', w: ['わたし', 'は', 'くるま', 'に', 'のります'] },
+    { ko: '저는 친구를 만납니다', w: ['わたし', 'は', 'ともだち', 'に', 'あいます'] },
+    { ko: '저는 신발을 삽니다', w: ['わたし', 'は', 'くつ', 'を', 'かいます'] },
+    { ko: '저는 창문을 엽니다', w: ['わたし', 'は', 'まど', 'を', 'あけます'] },
+    { ko: '저는 창문을 닫습니다', w: ['わたし', 'は', 'まど', 'を', 'しめます'] },
+    { ko: '저는 숲을 걷습니다', w: ['わたし', 'は', 'もり', 'を', 'あるきます'] },
+    { ko: '저는 강에서 헤엄칩니다', w: ['わたし', 'は', 'かわ', 'で', 'およぎます'] },
+    { ko: '저는 선생님과 이야기합니다', w: ['わたし', 'は', 'せんせい', 'と', 'はなします'] },
+    { ko: '어머니는 밥을 만듭니다', w: ['おかあさん', 'は', 'ごはん', 'を', 'つくります'] },
+    { ko: '아버지는 차를 탑니다', w: ['おとうさん', 'は', 'くるま', 'に', 'のります'] },
+    { ko: '아버지는 집에 돌아옵니다', w: ['おとうさん', 'は', 'うち', 'に', 'かえります'] },
+    /* 질문 */
+    { ko: '이것은 무엇입니까', w: ['これ', 'は', 'なん', 'ですか'] },
+    { ko: '이것은 누구의 것입니까', w: ['これ', 'は', 'だれ', 'の', 'ですか'] },
+    { ko: '이것은 얼마입니까', w: ['これ', 'は', 'いくら', 'ですか'] },
+    { ko: '역은 어디입니까', w: ['えき', 'は', 'どこ', 'ですか'] },
+    { ko: '화장실은 어디입니까', w: ['おてあらい', 'は', 'どこ', 'ですか'] }
   ];
-  var TOTAL_S = 8;
+  var TOTAL_S = 10;
+  /* 대화하기: A = 상대(일본어+뜻 표시), B = 나. B는 상황(hint)만 보고 alts 중 어느 것이든 만들면 통과 */
+  var DIALOGS = [
+    { id: 'd1', t: '아침 인사', lines: [
+      { a: 'A', w: ['おはよう', 'ございます'], ko: '안녕하세요 (아침 인사)' },
+      { a: 'B', hint: '아침 인사로 대답해 보세요', alts: [
+        { w: ['おはよう', 'ございます'], ko: '안녕하세요' },
+        { w: ['はい', 'おはよう', 'ございます'], ko: '네, 안녕하세요' },
+        { w: ['おはよう'], ko: '안녕' }] },
+      { a: 'A', w: ['げんき', 'ですか'], ko: '잘 지내세요?' },
+      { a: 'B', hint: '잘 지낸다고 대답해 보세요', alts: [
+        { w: ['はい', 'げんき', 'です'], ko: '네, 잘 지냅니다' },
+        { w: ['げんき', 'です'], ko: '잘 지냅니다' },
+        { w: ['はい', 'とても', 'げんき', 'です'], ko: '네, 아주 잘 지냅니다' }] },
+      { a: 'A', w: ['わたし', 'も', 'げんき', 'です'], ko: '저도 잘 지내요' },
+      { a: 'B', hint: '헤어지며 인사해 보세요', alts: [
+        { w: ['さようなら'], ko: '안녕히 가세요' },
+        { w: ['また', 'あした'], ko: '내일 또 봐요' },
+        { w: ['では', 'また'], ko: '그럼 또 봐요' }] }
+    ] },
+    { id: 'd2', t: '처음 만났을 때', lines: [
+      { a: 'A', w: ['はじめまして'], ko: '처음 뵙겠습니다' },
+      { a: 'B', hint: '인사하고 내 이름(아키코)을 말해 보세요', alts: [
+        { w: ['はじめまして', 'わたし', 'は', 'あきこ', 'です'], ko: '처음 뵙겠습니다. 저는 아키코입니다' },
+        { w: ['わたし', 'は', 'あきこ', 'です'], ko: '저는 아키코입니다' },
+        { w: ['はじめまして', 'あきこ', 'です'], ko: '처음 뵙겠습니다. 아키코입니다' }] },
+      { a: 'A', w: ['わたし', 'は', 'けんじ', 'です'], ko: '저는 겐지입니다' },
+      { a: 'B', hint: '잘 부탁한다고 말해 보세요', alts: [
+        { w: ['よろしく', 'おねがいします'], ko: '잘 부탁드립니다' },
+        { w: ['どうぞ', 'よろしく'], ko: '잘 부탁해요' },
+        { w: ['どうぞ', 'よろしく', 'おねがいします'], ko: '아무쪼록 잘 부탁드립니다' }] },
+      { a: 'A', w: ['こちら', 'こそ'], ko: '저야말로요' }
+    ] },
+    { id: 'd3', t: '가방 사기', lines: [
+      { a: 'A', w: ['なに', 'が', 'ほしい', 'ですか'], ko: '무엇이 필요하세요?' },
+      { a: 'B', hint: '가방을 달라고 말해 보세요', alts: [
+        { w: ['この', 'かばん', 'を', 'ください'], ko: '이 가방을 주세요' },
+        { w: ['かばん', 'を', 'ください'], ko: '가방을 주세요' },
+        { w: ['かばん', 'が', 'ほしい', 'です'], ko: '가방이 필요합니다' }] },
+      { a: 'A', w: ['ごせん', 'えん', 'です'], ko: '5천 엔입니다' },
+      { a: 'B', hint: '비싸다고 말해 보세요', alts: [
+        { w: ['たかい', 'ですね'], ko: '비싸네요' },
+        { w: ['これ', 'は', 'たかい', 'です'], ko: '이것은 비쌉니다' },
+        { w: ['たかい', 'です'], ko: '비쌉니다' }] },
+      { a: 'A', w: ['では', 'よせん', 'えん', 'です'], ko: '그럼 4천 엔입니다' },
+      { a: 'B', hint: '그걸로 사겠다고 말해 보세요', alts: [
+        { w: ['では', 'これ', 'を', 'ください'], ko: '그럼 이것을 주세요' },
+        { w: ['これ', 'を', 'かいます'], ko: '이것을 사겠습니다' },
+        { w: ['それ', 'を', 'ください'], ko: '그것을 주세요' }] },
+      { a: 'A', w: ['ありがとう', 'ございます'], ko: '감사합니다' }
+    ] },
+    { id: 'd4', t: '길 묻기', lines: [
+      { a: 'A', w: ['どうしました', 'か'], ko: '무슨 일이세요?' },
+      { a: 'B', hint: '역이 어디인지 물어보세요', alts: [
+        { w: ['えき', 'は', 'どこ', 'ですか'], ko: '역은 어디입니까?' },
+        { w: ['すみません', 'えき', 'は', 'どこ', 'ですか'], ko: '실례합니다. 역은 어디입니까?' }] },
+      { a: 'A', w: ['あそこ', 'です'], ko: '저기입니다' },
+      { a: 'B', hint: '고맙다고 말해 보세요', alts: [
+        { w: ['ありがとう', 'ございます'], ko: '감사합니다' },
+        { w: ['ありがとう'], ko: '고마워요' }] },
+      { a: 'A', w: ['どういたしまして'], ko: '천만에요' }
+    ] },
+    { id: 'd5', t: '식당에서', lines: [
+      { a: 'A', w: ['なに', 'を', 'たべます', 'か'], ko: '무엇을 드시겠어요?' },
+      { a: 'B', hint: '초밥을 주문해 보세요', alts: [
+        { w: ['すし', 'を', 'たべます'], ko: '초밥을 먹겠습니다' },
+        { w: ['すし', 'を', 'ください'], ko: '초밥을 주세요' },
+        { w: ['わたし', 'は', 'すし', 'を', 'たべます'], ko: '저는 초밥을 먹겠습니다' }] },
+      { a: 'A', w: ['のみもの', 'は', 'いかが', 'ですか'], ko: '음료는 어떠세요?' },
+      { a: 'B', hint: '물을 달라고 말해 보세요', alts: [
+        { w: ['みず', 'を', 'ください'], ko: '물을 주세요' },
+        { w: ['みず', 'を', 'おねがいします'], ko: '물을 부탁합니다' },
+        { w: ['みず', 'が', 'いい', 'です'], ko: '물이 좋겠어요' }] },
+      { a: 'A', w: ['おまたせ', 'しました'], ko: '기다리셨습니다' },
+      { a: 'B', hint: '먹기 전에 인사해 보세요', alts: [
+        { w: ['いただきます'], ko: '잘 먹겠습니다' },
+        { w: ['おいしい', 'ですね'], ko: '맛있네요' }] },
+      { a: 'A', w: ['どうぞ'], ko: '드세요' }
+    ] },
+    { id: 'd6', t: '취미 이야기', lines: [
+      { a: 'A', w: ['なに', 'が', 'すきです', 'か'], ko: '무엇을 좋아하세요?' },
+      { a: 'B', hint: '음악을 좋아한다고 말해 보세요', alts: [
+        { w: ['わたし', 'は', 'おんがく', 'が', 'すきです'], ko: '저는 음악을 좋아합니다' },
+        { w: ['おんがく', 'が', 'すきです'], ko: '음악을 좋아합니다' },
+        { w: ['おんがく', 'です'], ko: '음악이요' }] },
+      { a: 'A', w: ['わたし', 'も', 'すきです', 'よ'], ko: '저도 좋아해요' },
+      { a: 'B', hint: '기쁜 마음을 말해 보세요', alts: [
+        { w: ['うれしい', 'です'], ko: '기쁩니다' },
+        { w: ['うれしい', 'ですね'], ko: '기쁘네요' },
+        { w: ['いい', 'ですね'], ko: '좋네요' }] },
+      { a: 'A', w: ['ともだち', 'です', 'ね'], ko: '친구네요' }
+    ] },
+    { id: 'd7', t: '비 오는 날', lines: [
+      { a: 'A', w: ['そと', 'は', 'あめ', 'です', 'ね'], ko: '밖에 비가 오네요' },
+      { a: 'B', hint: '내게 우산이 없다고 말해 보세요', alts: [
+        { w: ['かさ', 'が', 'ありません'], ko: '우산이 없습니다' },
+        { w: ['わたし', 'は', 'かさ', 'が', 'ありません'], ko: '저는 우산이 없습니다' }] },
+      { a: 'A', w: ['では', 'これ', 'を', 'どうぞ'], ko: '그럼 이걸 쓰세요' },
+      { a: 'B', hint: '고맙다고 말해 보세요', alts: [
+        { w: ['ありがとう', 'ございます'], ko: '감사합니다' },
+        { w: ['ありがとう'], ko: '고마워요' }] },
+      { a: 'A', w: ['どういたしまして'], ko: '천만에요' }
+    ] },
+    { id: 'd8', t: '가족 소개', lines: [
+      { a: 'A', w: ['かぞく', 'は', 'なんにん', 'ですか'], ko: '가족은 몇 명이에요?' },
+      { a: 'B', hint: '아버지, 어머니, 나 세 명이라고 말해 보세요', alts: [
+        { w: ['おとうさん', 'と', 'おかあさん', 'と', 'わたし', 'です'], ko: '아버지와 어머니와 저입니다' },
+        { w: ['さんにん', 'です'], ko: '세 명입니다' },
+        { w: ['わたし', 'は', 'さんにん', 'かぞく', 'です'], ko: '저는 세 식구입니다' }] },
+      { a: 'A', w: ['おかあさん', 'は', 'やさしい', 'ですか'], ko: '어머니는 상냥하세요?' },
+      { a: 'B', hint: '상냥하다고 대답해 보세요', alts: [
+        { w: ['はい', 'やさしい', 'です'], ko: '네, 상냥합니다' },
+        { w: ['おかあさん', 'は', 'やさしい', 'です'], ko: '어머니는 상냥합니다' },
+        { w: ['やさしい', 'です'], ko: '상냥합니다' }] },
+      { a: 'A', w: ['いい', 'ですね'], ko: '좋네요' }
+    ] },
+    { id: 'd9', t: '헤어질 때', lines: [
+      { a: 'A', w: ['もう', 'かえります', 'か'], ko: '벌써 가세요?' },
+      { a: 'B', hint: '돌아간다고 말하고 내일 또 보자고 해 보세요', alts: [
+        { w: ['はい', 'また', 'あした'], ko: '네, 내일 또 봐요' },
+        { w: ['はい', 'かえります'], ko: '네, 돌아갑니다' },
+        { w: ['また', 'あした', 'あいます'], ko: '내일 또 만납시다' }] },
+      { a: 'A', w: ['では', 'また', 'あした'], ko: '그럼 내일 또 봐요' },
+      { a: 'B', hint: '작별 인사를 해 보세요', alts: [
+        { w: ['さようなら'], ko: '안녕히 계세요' },
+        { w: ['また', 'あした'], ko: '내일 또 봐요' }] },
+      { a: 'A', w: ['さようなら'], ko: '안녕히 가세요' }
+    ] },
+    { id: 'd10', t: '사과하기', lines: [
+      { a: 'A', w: ['ごめん', 'なさい'], ko: '죄송합니다' },
+      { a: 'B', hint: '괜찮다고 말해 보세요', alts: [
+        { w: ['いい', 'です', 'よ'], ko: '괜찮아요' },
+        { w: ['いい', 'です'], ko: '괜찮습니다' },
+        { w: ['きに', 'しません'], ko: '신경 쓰지 않아요' }] },
+      { a: 'A', w: ['ありがとう', 'ございます'], ko: '감사합니다' },
+      { a: 'B', hint: '천만에요라고 말해 보세요', alts: [
+        { w: ['どういたしまして'], ko: '천만에요' },
+        { w: ['いい', 'です', 'よ'], ko: '괜찮아요' }] }
+    ] }
+  ];
 
   function conv(s) {
     return s.replace(/[ぁ-ゖ]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) + 0x60); });
@@ -322,12 +542,17 @@ h2{margin:0;font-size:1.3rem}
       '<span class="unit-name">문장 만들기</span>' +
       '<span class="unit-sub" style="letter-spacing:0">단어를 순서대로 눌러 문장을 만들어요</span>' +
       '<span class="unit-stat">' + (sd ? sd.runs + '회 완료 · 최고 ' + sd.best + '/' + TOTAL_S : '아직 안 했어요') + '</span></button>';
+    var talkDone = DIALOGS.filter(function (d) { return save.done['talk-' + d.id]; }).length;
+    var talkCard = '<button class="unit mix' + (talkDone ? ' done' : '') + '" data-a="talks">' +
+      '<span class="unit-name">대화하기</span>' +
+      '<span class="unit-sub" style="letter-spacing:0">상대 말에 이어서 대답을 만들어요</span>' +
+      '<span class="unit-stat">' + talkDone + '/' + DIALOGS.length + ' 대화 완료</span></button>';
     return '<header class="top"><h1>가나 연습</h1><div class="stats"><span>연속 <b>' + currentStreak() + '</b>일</span><span><b>' + save.xp + '</b> XP</span></div></header>' +
       '<div class="tabs" role="group" aria-label="글자 종류">' +
       '<button class="tab" data-a="tab" data-v="hira" aria-pressed="' + (sc === 'hira') + '">히라가나</button>' +
       '<button class="tab" data-a="tab" data-v="kata" aria-pressed="' + (sc === 'kata') + '">가타카나</button></div>' +
       '<div class="voice"><span id="voice-note">' + voiceNote() + '</span><button class="link" data-a="test">소리 들어보기</button></div>' +
-      '<div class="units">' + cards + mix + sentCard + '</div>';
+      '<div class="units">' + cards + mix + sentCard + talkCard + '</div>';
   }
 
   function unitView() {
@@ -349,35 +574,83 @@ h2{margin:0;font-size:1.3rem}
       '<button class="btn" data-a="quitNo">계속하기</button><button class="btn ghost" data-a="quitYes">그만하기</button></div></div>' : '';
   }
 
-  function sentView() {
-    var L = S.L, q = L.cur, fb = L.phase === 'fb';
-    var prompt = q.type === 'listen'
-      ? '<button class="speak big" data-a="hear" data-t="' + q.s.w.join('') + '" aria-label="소리 듣기">' + ICON_SPK + '</button>'
-      : '<p class="s-ko">' + q.s.ko + '</p>';
-    var instr = q.type === 'listen' ? '들은 문장을 단어 순서대로 만드세요' : '일본어로 만들어 보세요';
+  function tokAreas(L, q) {
+    var fb = L.phase === 'fb';
     var used = {};
     L.ans.forEach(function (id) { used[id] = true; });
     var ans = L.ans.map(function (id, pos) {
-      var mark = fb && !L.ok ? (q.tokens[id].w === q.s.w[pos] ? ' right' : ' wrong') : '';
+      var mark = fb && !L.ok ? (q.tokens[id].w === (q.ref || q.s.w)[pos] ? ' right' : ' wrong') : '';
       return '<button class="tok' + mark + '" data-a="untok" data-i="' + id + '"' + (fb ? ' disabled' : '') + '>' + q.tokens[id].w + '</button>';
     }).join('');
     var bank = q.tokens.map(function (t) {
       return '<button class="tok' + (used[t.id] ? ' used' : '') + '" data-a="tok" data-i="' + t.id + '"' + (used[t.id] || fb ? ' disabled' : '') + '>' + t.w + '</button>';
     }).join('');
+    return '<div class="s-ans' + (fb && L.ok ? ' right' : '') + '">' + ans + '</div><div class="s-bank">' + bank + '</div>';
+  }
+
+  function sentFoot(L, q) {
     var full = q.s.w.join('');
-    var foot;
-    if (!fb) {
-      foot = '<div class="l-foot"><button class="btn" data-a="check"' + (L.ans.length ? '' : ' disabled') + '>확인</button></div>';
-    } else if (L.ok) {
-      foot = '<div class="l-foot ok"><p class="fb-title">맞아요!</p><p class="fb-detail"><span class="kana">' + full + '</span><br>' + q.s.ko + '</p><button class="btn ok" data-a="next">계속</button></div>';
-    } else {
-      foot = '<div class="l-foot bad"><p class="fb-title">아쉬워요</p><p class="fb-detail">정답은 <span class="kana">' + full + '</span><br>' + q.s.ko + '<br>나중에 다시 나와요.</p><button class="btn bad" data-a="next">계속</button></div>';
+    if (L.phase !== 'fb') {
+      return '<div class="l-foot"><button class="btn" data-a="check"' + (L.ans.length ? '' : ' disabled') + '>확인</button></div>';
     }
+    if (L.ok) {
+      return '<div class="l-foot ok"><p class="fb-title">맞아요!</p><p class="fb-detail"><span class="kana">' + full + '</span><br>' + q.s.ko + '</p><button class="btn ok" data-a="next">계속</button></div>';
+    }
+    return '<div class="l-foot bad"><p class="fb-title">아쉬워요</p><p class="fb-detail">정답은 <span class="kana">' + full + '</span><br>' + q.s.ko + '<br>' +
+      (L.mode === 'talk' ? '다시 도전해 보세요.' : '나중에 다시 나와요.') + '</p><button class="btn bad" data-a="next">계속</button></div>';
+  }
+
+  function lessonShell(L, instr, body, foot) {
     return '<div class="lesson"><div class="l-top"><button class="icon" data-a="quit" aria-label="그만하기">' + ICON_X + '</button>' +
       '<div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="' + L.total + '" aria-valuenow="' + L.done + '"><i style="width:' + (L.done / L.total * 100) + '%"></i></div></div>' +
-      '<div class="l-body"><p class="instr">' + instr + '</p><div class="prompt">' + prompt + '</div>' +
-      '<div class="s-ans' + (fb && L.ok ? ' right' : '') + '">' + ans + '</div><div class="s-bank">' + bank + '</div></div>' +
-      foot + '</div>' + quitSheet(L);
+      '<div class="l-body"><p class="instr">' + instr + '</p>' + body + '</div>' + foot + '</div>' + quitSheet(L);
+  }
+
+  function talkFoot(L, q) {
+    if (L.phase !== 'fb') {
+      return '<div class="l-foot"><button class="btn" data-a="check"' + (L.ans.length ? '' : ' disabled') + '>확인</button></div>';
+    }
+    if (L.ok) {
+      return '<div class="l-foot ok"><p class="fb-title">자연스러워요!</p><p class="fb-detail"><span class="kana">' + q.said.join('') + '</span><br>' + q.match.ko +
+        '</p><button class="btn ok" data-a="next">계속</button></div>';
+    }
+    var ex = q.s.alts.slice(0, 2).map(function (alt) {
+      return '<span class="kana">' + alt.w.join('') + '</span> (' + alt.ko + ')';
+    }).join('<br>');
+    return '<div class="l-foot bad"><p class="fb-title">조금 달라요</p><p class="fb-detail">이런 말이 자연스러워요<br>' + ex +
+      '<br>다시 도전해 보세요.</p><button class="btn bad" data-a="next">계속</button></div>';
+  }
+
+  function sentView() {
+    var L = S.L, q = L.cur;
+    var prompt = q.type === 'listen'
+      ? '<button class="speak big" data-a="hear" data-t="' + q.s.w.join('') + '" aria-label="소리 듣기">' + ICON_SPK + '</button>'
+      : '<p class="s-ko">' + q.s.ko + '</p>';
+    var instr = q.type === 'listen' ? '들은 문장을 단어 순서대로 만드세요' : '일본어로 만들어 보세요';
+    return lessonShell(L, instr, '<div class="prompt">' + prompt + '</div>' + tokAreas(L, q), sentFoot(L, q));
+  }
+
+  function talkView() {
+    var L = S.L, q = L.cur;
+    var chat = L.hist.map(function (ln) {
+      var t = ln.w.join('');
+      return '<div class="bub ' + (ln.a === 'A' ? 'a' : 'b') + '"><button class="bub-t" data-a="hear" data-t="' + t + '">' + t + '</button><span class="bub-ko">' + ln.ko + '</span></div>';
+    }).join('');
+    var body = '<div class="chat">' + chat + '</div><p class="s-ko sm">상황: ' + q.s.hint + '</p>' + tokAreas(L, q);
+    return lessonShell(L, L.title, body, talkFoot(L, q));
+  }
+
+  function talksView() {
+    var cards = DIALOGS.map(function (d) {
+      var r = save.done['talk-' + d.id];
+      var n = d.lines.filter(function (l) { return l.a === 'B'; }).length;
+      return '<button class="unit' + (r ? ' done' : '') + '" data-a="talk" data-id="' + d.id + '">' +
+        '<span class="unit-name">' + d.t + '</span>' +
+        '<span class="unit-sub" style="letter-spacing:0">' + d.lines[0].w.join('') + '</span>' +
+        '<span class="unit-stat">' + (r ? r.runs + '회 완료 · 최고 ' + r.best + '/' + n : '아직 안 했어요') + '</span></button>';
+    }).join('');
+    return '<div class="row"><button class="icon" data-a="home" aria-label="처음으로">' + ICON_BACK + '</button><h2>대화하기</h2></div>' +
+      '<p class="hint">상대 말에 이어서 내 대답을 단어 조각으로 만들어요. 말풍선을 누르면 소리가 나요.</p><div class="units">' + cards + '</div>';
   }
 
   function lessonView() {
@@ -428,7 +701,7 @@ h2{margin:0;font-size:1.3rem}
 
   function render() {
     var v = S.view;
-    app.innerHTML = v === 'home' ? homeView() : v === 'unit' ? unitView() : v === 'lesson' ? (S.L.mode === 'sent' ? sentView() : lessonView()) : resultView();
+    app.innerHTML = v === 'home' ? homeView() : v === 'unit' ? unitView() : v === 'talks' ? talksView() : v === 'lesson' ? (S.L.mode === 'sent' ? sentView() : S.L.mode === 'talk' ? talkView() : lessonView()) : resultView();
     if (v !== lastView) { window.scrollTo(0, 0); lastView = v; }
   }
 
@@ -472,6 +745,82 @@ h2{margin:0;font-size:1.3rem}
     nextQ();
   }
 
+  var WORDPOOL = null;
+  function lineWords(l) {
+    var out = (l.w || []).slice();
+    (l.alts || []).forEach(function (x) { out = out.concat(x.w); });
+    return out;
+  }
+  function makeTokensAlts(alts) {
+    var need = {}, all = [];
+    alts.forEach(function (alt) {
+      var cnt = {};
+      alt.w.forEach(function (w) { cnt[w] = (cnt[w] || 0) + 1; });
+      for (var w in cnt) need[w] = Math.max(need[w] || 0, cnt[w]);
+    });
+    for (var w in need) for (var i = 0; i < need[w]; i++) all.push(w);
+    return makeTokens(all);
+  }
+  function makeTokens(ws) {
+    if (!WORDPOOL) {
+      var seen = {};
+      WORDPOOL = [];
+      var add = function (w) { if (!seen[w]) { seen[w] = true; WORDPOOL.push(w); } };
+      SENTS.forEach(function (x) { x.w.forEach(add); });
+      DIALOGS.forEach(function (d) { d.lines.forEach(function (l) { lineWords(l).forEach(add); }); });
+    }
+    var extra = WORDPOOL.filter(function (w) { return ws.indexOf(w) < 0; });
+    return shuffle(ws.concat(shuffle(extra).slice(0, 2))).map(function (w, i) { return { w: w, id: i }; });
+  }
+
+  function startTalk(id) {
+    var d = DIALOGS.filter(function (x) { return x.id === id; })[0];
+    var n = d.lines.filter(function (l) { return l.a === 'B'; }).length;
+    S.L = { mode: 'talk', uid: id, title: d.t, total: n, lines: d.lines, pos: 0, hist: [], tries: 0, done: 0, firstOK: 0,
+      ans: [], phase: 'ask', ok: false, quit: false, cur: null, gain: 0 };
+    S.view = 'lesson';
+    talkAdvance();
+  }
+
+  function talkAdvance() {
+    var L = S.L, lastA = null;
+    while (L.pos < L.lines.length && L.lines[L.pos].a === 'A') { lastA = L.lines[L.pos]; L.hist.push(lastA); L.pos++; }
+    if (L.pos >= L.lines.length) { finish(); return; }
+    var ln = L.lines[L.pos];
+    L.cur = { s: ln, tokens: makeTokensAlts(ln.alts), first: L.tries === 0 };
+    L.ans = [];
+    L.phase = 'ask';
+    render();
+    if (lastA) speak(lastA.w.join(''));
+  }
+
+  function checkTalk() {
+    var L = S.L, q = L.cur;
+    if (!L.ans.length || L.phase !== 'ask') return;
+    var got = L.ans.map(function (id) { return q.tokens[id].w; });
+    var hit = null, best = q.s.alts[0], bestN = -1;
+    q.s.alts.forEach(function (alt) {
+      if (alt.w.join('|') === got.join('|')) hit = alt;
+      var n = 0;
+      got.forEach(function (w, i) { if (alt.w[i] === w) n++; });
+      if (n > bestN) { bestN = n; best = alt; }
+    });
+    L.ok = !!hit;
+    L.phase = 'fb';
+    q.match = hit;
+    q.ref = best.w;
+    q.said = got;
+    if (L.ok) { L.done++; if (q.first) L.firstOK++; }
+    render();
+    speak(got.join(''));
+  }
+
+  function talkNext() {
+    var L = S.L, q = L.cur;
+    if (L.ok) { L.hist.push({ a: 'B', w: q.said, ko: q.match.ko }); L.pos++; L.tries = 0; } else { L.tries++; }
+    talkAdvance();
+  }
+
   function startSent() {
     var picks = shuffle(SENTS).slice(0, TOTAL_S);
     var L = { mode: 'sent', uid: 'sent', total: TOTAL_S, queue: [], done: 0, firstOK: 0, ans: [], phase: 'ask', ok: false, quit: false, cur: null, gain: 0 };
@@ -484,11 +833,7 @@ h2{margin:0;font-size:1.3rem}
 
   function nextS() {
     var L = S.L, q = L.cur = L.queue.shift();
-    var extra = [];
-    SENTS.forEach(function (s) {
-      s.w.forEach(function (w) { if (q.s.w.indexOf(w) < 0 && extra.indexOf(w) < 0) extra.push(w); });
-    });
-    q.tokens = shuffle(q.s.w.concat(shuffle(extra).slice(0, 2))).map(function (w, i) { return { w: w, id: i }; });
+    q.tokens = makeTokens(q.s.w);
     L.ans = [];
     L.phase = 'ask';
     render();
@@ -522,6 +867,7 @@ h2{margin:0;font-size:1.3rem}
 
   function check() {
     if (S.L.mode === 'sent') { checkSent(); return; }
+    if (S.L.mode === 'talk') { checkTalk(); return; }
     var L = S.L, q = L.cur;
     if (L.selected === null || L.phase !== 'ask') return;
     var key = keyOf(q);
@@ -542,11 +888,12 @@ h2{margin:0;font-size:1.3rem}
   function next() {
     var L = S.L;
     if (L.phase !== 'fb') return;
+    if (L.mode === 'talk') { talkNext(); return; }
     if (L.queue.length === 0) finish(); else if (L.mode === 'sent') nextS(); else nextQ();
   }
 
   function finish() {
-    var L = S.L, k = L.mode === 'sent' ? 'sent' : L.sc + '-' + L.uid;
+    var L = S.L, k = L.mode === 'sent' ? 'sent' : L.mode === 'talk' ? 'talk-' + L.uid : L.sc + '-' + L.uid;
     var d = save.done[k] || { runs: 0, best: 0 };
     d.runs++;
     d.best = Math.max(d.best, L.firstOK);
@@ -574,6 +921,8 @@ h2{margin:0;font-size:1.3rem}
     else if (a === 'unit') { S.unit = el.getAttribute('data-id'); S.view = 'unit'; render(); }
     else if (a === 'mix') { startLesson('mix'); }
     else if (a === 'sent') { startSent(); }
+    else if (a === 'talks') { S.view = 'talks'; render(); }
+    else if (a === 'talk') { startTalk(el.getAttribute('data-id')); }
     else if (a === 'tok') { if (S.L.phase === 'ask') { S.L.ans.push(+el.getAttribute('data-i')); render(); } }
     else if (a === 'untok') { if (S.L.phase === 'ask') { var ui = +el.getAttribute('data-i'); S.L.ans = S.L.ans.filter(function (x) { return x !== ui; }); render(); } }
     else if (a === 'start') { startLesson(el.getAttribute('data-id')); }
@@ -586,13 +935,13 @@ h2{margin:0;font-size:1.3rem}
     else if (a === 'quit') { S.L.quit = true; render(); }
     else if (a === 'quitNo') { S.L.quit = false; render(); }
     else if (a === 'quitYes') { S.view = 'home'; S.L = null; render(); }
-    else if (a === 'again') { if (S.L.mode === 'sent') startSent(); else startLesson(S.L.uid); }
+    else if (a === 'again') { if (S.L.mode === 'sent') startSent(); else if (S.L.mode === 'talk') startTalk(S.L.uid); else startLesson(S.L.uid); }
   });
 
   document.addEventListener('keydown', function (e) {
     if (S.view !== 'lesson' || !S.L || S.L.quit) return;
     var L = S.L;
-    if (L.mode !== 'sent' && e.key >= '1' && e.key <= '4' && L.phase === 'ask') {
+    if (L.mode !== 'sent' && L.mode !== 'talk' && e.key >= '1' && e.key <= '4' && L.phase === 'ask') {
       var i = +e.key - 1;
       if (i < L.cur.opts.length) { L.selected = i; render(); }
     } else if (e.key === 'Enter') {
