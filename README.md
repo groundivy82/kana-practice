@@ -7,3 +7,6 @@ AI·네트워크 호출 없이 폰 안에서만 동작하고, 일본어 소리�
 - 메뉴: 글자 단원 연습 + 문장 만들기(히라가나 문장을 단어 조각으로 맞추기)
 - 앱 껍데기: `MainActivity.java` (WebView + TextToSpeech 다리)
 - 빌드: push 하면 GitHub Actions가 APK를 만들어 Releases(`latest`)에 올린다.
+- 웹 버전(아이폰 등): push 하면 GitHub Pages로도 배포된다. 주소는 `https://groundivy82.github.io/kana-practice/`
+  (처음 한 번, 저장소 Settings → Pages → Source 를 `GitHub Actions` 로 바꿔야 한다.)
+  아이폰은 Safari에서 열고 공유 버튼 → "홈 화면에 추가"로 앱처럼 쓴다.
