@@ -126,8 +126,8 @@ h2{margin:0;font-size:1.3rem}
   border:2px solid var(--line);border-radius:14px;box-shadow:0 3px 0 var(--line)}
 .tok:active:not(:disabled){transform:translateY(2px);box-shadow:0 1px 0 var(--line)}
 .tok.used{opacity:.25;box-shadow:none}
-.s-ans.right .tok{border-color:var(--ok);background:var(--ok-soft)}
-.s-ans.wrong .tok{border-color:var(--bad);background:var(--bad-soft)}
+.tok.right,.s-ans.right .tok{border-color:var(--ok);background:var(--ok-soft)}
+.tok.wrong{border-color:var(--bad);background:var(--bad-soft);text-decoration:line-through}
 
 /* quit sheet */
 .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;justify-content:center;z-index:20}
@@ -354,8 +354,9 @@ h2{margin:0;font-size:1.3rem}
     var instr = q.type === 'listen' ? '들은 문장을 단어 순서대로 만드세요' : '일본어로 만들어 보세요';
     var used = {};
     L.ans.forEach(function (id) { used[id] = true; });
-    var ans = L.ans.map(function (id) {
-      return '<button class="tok" data-a="untok" data-i="' + id + '"' + (fb ? ' disabled' : '') + '>' + q.tokens[id].w + '</button>';
+    var ans = L.ans.map(function (id, pos) {
+      var mark = fb && !L.ok ? (q.tokens[id].w === q.s.w[pos] ? ' right' : ' wrong') : '';
+      return '<button class="tok' + mark + '" data-a="untok" data-i="' + id + '"' + (fb ? ' disabled' : '') + '>' + q.tokens[id].w + '</button>';
     }).join('');
     var bank = q.tokens.map(function (t) {
       return '<button class="tok' + (used[t.id] ? ' used' : '') + '" data-a="tok" data-i="' + t.id + '"' + (used[t.id] || fb ? ' disabled' : '') + '>' + t.w + '</button>';
@@ -372,7 +373,7 @@ h2{margin:0;font-size:1.3rem}
     return '<div class="lesson"><div class="l-top"><button class="icon" data-a="quit" aria-label="그만하기">' + ICON_X + '</button>' +
       '<div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="' + L.total + '" aria-valuenow="' + L.done + '"><i style="width:' + (L.done / L.total * 100) + '%"></i></div></div>' +
       '<div class="l-body"><p class="instr">' + instr + '</p><div class="prompt">' + prompt + '</div>' +
-      '<div class="s-ans' + (fb ? (L.ok ? ' right' : ' wrong') : '') + '">' + ans + '</div><div class="s-bank">' + bank + '</div></div>' +
+      '<div class="s-ans' + (fb && L.ok ? ' right' : '') + '">' + ans + '</div><div class="s-bank">' + bank + '</div></div>' +
       foot + '</div>' + quitSheet(L);
   }
 
