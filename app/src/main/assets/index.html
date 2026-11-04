@@ -217,13 +217,42 @@ h2{margin:0;font-size:1.35rem}
 .result{display:flex;flex-direction:column;gap:16px;align-items:stretch;text-align:center;padding-top:20px}
 .cheer{margin:0;font-size:.95rem;font-weight:500;letter-spacing:.3em;color:var(--accent)}
 .ring{--p:0;position:relative;width:170px;height:170px;margin:0 auto;border-radius:50%;display:grid;place-items:center;
-  background:conic-gradient(var(--primary),var(--accent) calc(var(--p)*1%),var(--line) 0)}
+  background:conic-gradient(var(--primary),var(--accent) calc(var(--pp,var(--p))*1%),var(--line) 0);animation:ringfill 1.1s .25s ease-out both}
 .ring::before{content:"";position:absolute;inset:14px;border-radius:50%;background:var(--bg)}
 .score{position:relative;font-size:2.6rem;font-weight:700;color:var(--primary);line-height:1}
 .chips{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
 .chip{background:var(--primary-soft);color:var(--primary);border-radius:99px;padding:6px 16px;font-weight:700;font-size:.9rem}
 
-@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+/* motion: only things that just appeared animate (see render()), so nothing flickers when you tap */
+@property --pp{syntax:'<number>';inherits:false;initial-value:0}
+@keyframes pop{0%{transform:scale(.9)}55%{transform:scale(1.07)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}18%{transform:translateX(-9px)}38%{transform:translateX(8px)}58%{transform:translateX(-5px)}78%{transform:translateX(3px)}}
+@keyframes bounce{0%{transform:translateY(0)}30%{transform:translateY(-11px)}55%{transform:translateY(0)}75%{transform:translateY(-4px)}100%{transform:translateY(0)}}
+@keyframes sheetUp{from{transform:translateY(60px);opacity:0}to{transform:none;opacity:1}}
+@keyframes iconPop{0%{transform:scale(0) rotate(-40deg)}65%{transform:scale(1.3) rotate(8deg)}100%{transform:scale(1) rotate(0)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+@keyframes grow{from{width:var(--from)}}
+@keyframes ringfill{from{--pp:0}to{--pp:var(--p)}}
+@keyframes fall{0%{transform:translate3d(0,0,0) rotate(0);opacity:1}85%{opacity:1}100%{transform:translate3d(var(--dx),108vh,0) rotate(var(--r));opacity:0}}
+.enter-q .l-body{animation:slideIn .3s ease-out both}
+.enter-q .bub:nth-last-child(-n+2){animation:rise .3s ease-out both}
+.bar i{animation:grow .5s cubic-bezier(.3,.9,.3,1)}
+.opt.sel{animation:pop .22s ease-out}
+.opt.right{animation:bounce .55s ease-out}
+.opt.wrong{animation:shake .45s ease-out}
+.tok.pop{animation:pop .22s ease-out}
+.tok.wrong{animation:shake .45s ease-out}
+.s-ans.right .tok{animation:bounce .55s ease-out}
+.s-ans.right .tok:nth-child(2){animation-delay:.06s}.s-ans.right .tok:nth-child(3){animation-delay:.12s}
+.s-ans.right .tok:nth-child(4){animation-delay:.18s}.s-ans.right .tok:nth-child(5){animation-delay:.24s}
+.s-ans.right .tok:nth-child(n+6){animation-delay:.3s}
+.l-foot.ok,.l-foot.bad{animation:sheetUp .3s cubic-bezier(.2,.9,.3,1.15)}
+.l-foot.ok .fb-title::before{animation:iconPop .45s .12s cubic-bezier(.3,1.4,.5,1) both}
+.l-foot.bad .fb-title::before{animation:shake .45s .15s ease-out both}
+.tap{animation:pop .25s ease-out}
+.confetti{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:30}
+.confetti i{position:absolute;top:-16px;width:9px;height:14px;border-radius:3px;animation:fall 2.2s ease-in forwards}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.ring{--pp:var(--p)}.confetti{display:none}}
 </style>
 </head>
 <body>
@@ -649,6 +678,12 @@ h2{margin:0;font-size:1.35rem}
     return q.type === 'read' ? function (c) { return c.k; } : function (c) { return c.g; };
   }
 
+  function barStyle(L) {
+    var to = L.done / L.total * 100, from = L.shown == null ? to : L.shown;
+    L.shown = to;
+    return 'width:' + to + '%;--from:' + from + '%';
+  }
+
   function quitSheet(L) {
     return L.quit ? '<div class="backdrop"><div class="sheet" role="dialog" aria-label="그만할까요?"><h3>그만할까요?</h3><p class="hint">지금까지 푼 기록은 저장되지 않아요.</p>' +
       '<button class="btn" data-a="quitNo">계속하기</button><button class="btn ghost" data-a="quitYes">그만하기</button></div></div>' : '';
@@ -660,6 +695,7 @@ h2{margin:0;font-size:1.35rem}
     L.ans.forEach(function (id) { used[id] = true; });
     var ans = L.ans.map(function (id, pos) {
       var mark = fb && !L.ok ? (q.tokens[id].w === (q.ref || q.s.w)[pos] ? ' right' : ' wrong') : '';
+      if (!fb && id === L.pop) mark += ' pop';
       return '<button class="tok' + mark + '" data-a="untok" data-i="' + id + '"' + (fb ? ' disabled' : '') + '>' + q.tokens[id].w + '</button>';
     }).join('');
     var bank = q.tokens.map(function (t) {
@@ -682,7 +718,7 @@ h2{margin:0;font-size:1.35rem}
 
   function lessonShell(L, instr, body, foot) {
     return '<div class="lesson"><div class="l-top"><button class="icon" data-a="quit" aria-label="그만하기">' + ICON_X + '</button>' +
-      '<div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="' + L.total + '" aria-valuenow="' + L.done + '"><i style="width:' + (L.done / L.total * 100) + '%"></i></div></div>' +
+      '<div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="' + L.total + '" aria-valuenow="' + L.done + '"><i style="' + barStyle(L) + '"></i></div></div>' +
       '<div class="l-body"><p class="instr">' + instr + '</p>' + body + '</div>' + foot + '</div>' + quitSheet(L);
   }
 
@@ -766,29 +802,37 @@ h2{margin:0;font-size:1.35rem}
     }
     var quit = quitSheet(L);
     return '<div class="lesson"><div class="l-top"><button class="icon" data-a="quit" aria-label="그만하기">' + ICON_X + '</button>' +
-      '<div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="' + L.total + '" aria-valuenow="' + L.done + '"><i style="width:' + (L.done / L.total * 100) + '%"></i></div></div>' +
+      '<div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="' + L.total + '" aria-valuenow="' + L.done + '"><i style="' + barStyle(L) + '"></i></div></div>' +
       '<div class="l-body"><p class="instr">' + instr + '</p><div class="prompt">' + prompt + '</div><div class="opts">' + opts + '</div></div>' +
       foot + '</div>' + quit;
+  }
+
+  function confetti() {
+    var cols = ['#ee6f94', '#4553b5', '#ffc94d', '#3fbf8a', '#8e9bf0', '#f58a5c'], out = '';
+    for (var i = 0; i < 32; i++) {
+      out += '<i style="left:' + Math.round(Math.random() * 100) + '%;background:' + cols[i % cols.length] +
+        ';animation-delay:' + (Math.random() * 0.5).toFixed(2) + 's;animation-duration:' + (1.8 + Math.random()).toFixed(2) +
+        's;--dx:' + Math.round(Math.random() * 120 - 60) + 'px;--r:' + Math.round(360 + Math.random() * 540) + 'deg"></i>';
+    }
+    return '<div class="confetti" aria-hidden="true">' + out + '</div>';
   }
 
   function resultView() {
     var L = S.L;
     var msg = L.firstOK === L.total ? '하나도 안 틀렸어요!' : (L.firstOK / L.total >= 0.7 ? '잘했어요!' : '틀린 문제는 다시 풀어서 맞혔어요.');
-    return '<div class="result"><p class="cheer kana">おつかれさま</p><h2>연습 끝</h2><div class="ring" style="--p:' + Math.round(L.firstOK / L.total * 100) + '"><span class="score">' + L.firstOK + '/' + L.total + '</span></div><p class="hint">' + msg + '</p>' +
+    return '<div class="result">' + (L.firstOK / L.total >= 0.7 ? confetti() : '') + '<p class="cheer kana">おつかれさま</p><h2>연습 끝</h2><div class="ring" style="--p:' + Math.round(L.firstOK / L.total * 100) + '"><span class="score">' + L.firstOK + '/' + L.total + '</span></div><p class="hint">' + msg + '</p>' +
       '<div class="chips"><span class="chip">+' + L.gain + ' XP</span><span class="chip">연속 ' + currentStreak() + '일</span></div>' +
       '<button class="btn" data-a="again">한 번 더</button><button class="btn ghost" data-a="home">처음으로</button></div>';
   }
 
-  function render() {
-    var v = S.view;
-    app.innerHTML = v === 'home' ? homeView() : v === 'unit' ? unitView() : v === 'talks' ? talksView() : v === 'lesson' ? (S.L.mode === 'sent' ? sentView() : S.L.mode === 'talk' ? talkView() : lessonView()) : resultView();
-    if (v !== lastView) {
-      window.scrollTo(0, 0);
-      lastView = v;
-      app.classList.remove('enter');
-      void app.offsetWidth;
-      app.classList.add('enter');
-    }
+  function render(nextQuestion) {
+    var v = S.view, changed = v !== lastView;
+    /* the animation class is set only for the render that needs it, so clicking an option never replays it */
+    app.classList.remove('enter', 'enter-q');
+    if (changed) app.classList.add('enter');
+    else if (nextQuestion === true) app.classList.add('enter-q');
+    app.innerHTML = v === 'home' ? homeView() : v === 'talks' ? talksView() : v === 'unit' ? unitView() : v === 'lesson' ? (S.L.mode === 'sent' ? sentView() : S.L.mode === 'talk' ? talkView() : lessonView()) : resultView();
+    if (changed) { window.scrollTo(0, 0); lastView = v; }
   }
 
   /* ---------- lesson logic ---------- */
@@ -876,7 +920,7 @@ h2{margin:0;font-size:1.35rem}
     L.cur = { s: ln, tokens: makeTokensAlts(ln.alts), first: L.tries === 0 };
     L.ans = [];
     L.phase = 'ask';
-    render();
+    render(true);
     if (lastA) speak(lastA.w.join(''));
   }
 
@@ -922,7 +966,7 @@ h2{margin:0;font-size:1.35rem}
     q.tokens = makeTokens(q.s.w);
     L.ans = [];
     L.phase = 'ask';
-    render();
+    render(true);
     if (q.type === 'listen') speak(q.s.w.join(''));
   }
 
@@ -947,7 +991,7 @@ h2{margin:0;font-size:1.35rem}
     buildOpts(L.cur, L);
     L.selected = null;
     L.phase = 'ask';
-    render();
+    render(true);
     if (L.cur.type === 'listen') speak(L.cur.item.h);
   }
 
@@ -1009,11 +1053,11 @@ h2{margin:0;font-size:1.35rem}
     else if (a === 'sent') { startSent(); }
     else if (a === 'talks') { S.view = 'talks'; render(); }
     else if (a === 'talk') { startTalk(el.getAttribute('data-id')); }
-    else if (a === 'tok') { if (S.L.phase === 'ask') { S.L.ans.push(+el.getAttribute('data-i')); render(); } }
-    else if (a === 'untok') { if (S.L.phase === 'ask') { var ui = +el.getAttribute('data-i'); S.L.ans = S.L.ans.filter(function (x) { return x !== ui; }); render(); } }
+    else if (a === 'tok') { if (S.L.phase === 'ask') { S.L.pop = +el.getAttribute('data-i'); S.L.ans.push(S.L.pop); render(); } }
+    else if (a === 'untok') { if (S.L.phase === 'ask') { var ui = +el.getAttribute('data-i'); S.L.pop = null; S.L.ans = S.L.ans.filter(function (x) { return x !== ui; }); render(); } }
     else if (a === 'start') { startLesson(el.getAttribute('data-id')); }
     else if (a === 'home') { S.view = 'home'; render(); }
-    else if (a === 'hear') { speak(el.getAttribute('data-t')); }
+    else if (a === 'hear') { speak(el.getAttribute('data-t')); el.classList.remove('tap'); void el.offsetWidth; el.classList.add('tap'); }
     else if (a === 'test') { speak('あ'); }
     else if (a === 'opt') { if (S.L.phase === 'ask') { S.L.selected = +el.getAttribute('data-i'); render(); } }
     else if (a === 'check') { check(); }
