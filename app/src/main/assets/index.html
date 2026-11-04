@@ -18,7 +18,7 @@ html,body{margin:0}
   --ok:#1b8f5a;--ok-soft:#d9f4e6;--bad:#cf3f52;--bad-soft:#fde4e7;
   --hero-a:#3d4aa6;--hero-b:#262f70;--glow-a:rgba(238,111,148,.16);--glow-b:rgba(69,83,181,.14);
   --us:62%;--ul:46%;--uss:85%;--usl:94%;
-  --shadow:0 12px 24px -16px rgba(38,47,112,.45);
+  --shadow:0 12px 24px -16px rgba(38,47,112,.45);--dot:#c3c9ec;
   --font-ui:"Noto Sans KR",system-ui,-apple-system,"Segoe UI",sans-serif;
   --font-kana:"Noto Sans JP","Hiragino Maru Gothic ProN","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
 }
@@ -30,7 +30,7 @@ html,body{margin:0}
     --ok:#5fd69b;--ok-soft:#14352a;--bad:#ff8c98;--bad-soft:#3d1e28;
     --hero-a:#2c3687;--hero-b:#1a2160;--glow-a:rgba(245,138,171,.10);--glow-b:rgba(142,155,240,.12);
     --us:62%;--ul:72%;--uss:30%;--usl:22%;
-    --shadow:0 12px 24px -16px rgba(0,0,0,.7);
+    --shadow:0 12px 24px -16px rgba(0,0,0,.7);--dot:#39427e;
     color-scheme:dark;
   }
 }
@@ -41,7 +41,7 @@ html,body{margin:0}
   --ok:#5fd69b;--ok-soft:#14352a;--bad:#ff8c98;--bad-soft:#3d1e28;
   --hero-a:#2c3687;--hero-b:#1a2160;--glow-a:rgba(245,138,171,.10);--glow-b:rgba(142,155,240,.12);
   --us:62%;--ul:72%;--uss:30%;--usl:22%;
-  --shadow:0 12px 24px -16px rgba(0,0,0,.7);
+  --shadow:0 12px 24px -16px rgba(0,0,0,.7);--dot:#39427e;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -252,7 +252,61 @@ h2{margin:0;font-size:1.35rem}
 .tap{animation:pop .25s ease-out}
 .confetti{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:30}
 .confetti i{position:absolute;top:-16px;width:9px;height:14px;border-radius:3px;animation:fall 2.2s ease-in forwards}
-@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.ring{--pp:var(--p)}.confetti{display:none}}
+/* springy release on every pressable thing */
+.btn,.opt,.tok,.unit,.feat,.cell,.icon,.link,.speak,.n-circle{transition:transform .2s cubic-bezier(.3,1.7,.5,1),box-shadow .2s ease}
+.opt,.s-ans{position:relative}
+.tok.pop{animation:none}
+
+/* hero petals + floating kana */
+.hero>.petals{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.petal{position:absolute;top:-16px;width:11px;height:15px;border-radius:80% 0 80% 0;background:rgba(255,205,222,.8);opacity:0;
+  animation:drift var(--d) linear var(--l) infinite;transform:scale(var(--s))}
+@keyframes drift{0%{transform:translate3d(0,0,0) rotate(0);opacity:0}12%{opacity:.85}50%{transform:translate3d(22px,110px,0) rotate(170deg)}85%{opacity:.7}100%{transform:translate3d(-10px,250px,0) rotate(360deg);opacity:0}}
+.hero::after{animation:floaty 6s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-8px) rotate(3deg)}}
+
+/* path of units */
+.path{position:relative}
+.path-line{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.path-line path{fill:none;stroke-linecap:round;vector-effect:non-scaling-stroke;stroke-width:6}
+.path-line .base{stroke:var(--dot);stroke-dasharray:.1 12}
+.path-line .doneline{stroke:var(--primary);stroke-dasharray:.1 12}
+.node{--sh:hsl(var(--h) var(--us) calc(var(--ul) - 16%));position:absolute;width:132px;margin-left:-66px;display:flex;flex-direction:column;align-items:center;gap:5px;
+  border:0;background:transparent;padding:0;text-align:center}
+.n-circle{position:relative;display:grid;place-items:center;width:84px;height:84px;border-radius:50%;background:var(--surface);color:var(--u);
+  border:4px solid var(--u);box-shadow:0 7px 0 var(--sh);font:700 2.3rem/1 var(--font-kana)}
+.n-circle svg{width:38px;height:38px}
+.node:active:not(:disabled) .n-circle{transform:translateY(6px);box-shadow:0 1px 0 var(--sh)}
+.node.done .n-circle{background:var(--u);color:var(--primary-fg)}
+.n-star{position:absolute;right:-6px;top:-6px;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#ffc94d;color:#fff;border:3px solid var(--bg)}
+.n-star svg{width:15px;height:15px}
+.n-label{font-size:.9rem;font-weight:700;line-height:1.25;color:var(--fg)}
+.n-stat{font-size:.72rem;line-height:1.2;color:var(--muted);font-family:var(--font-kana);letter-spacing:.06em}
+.node.done .n-stat{color:var(--u);font-weight:700;font-family:var(--font-ui);letter-spacing:0}
+.node:disabled{opacity:.55}.node:disabled .n-circle{border-style:dashed;box-shadow:none}
+.node.next .n-circle{animation:bob 1.8s ease-in-out infinite}
+.node.next .n-circle::after{content:"";position:absolute;inset:-9px;border-radius:50%;border:3px solid var(--u);animation:ping 1.7s ease-out infinite}
+.n-tag{position:absolute;top:-36px;left:50%;margin-left:-28px;width:56px;text-align:center;padding:3px 0;border-radius:12px;background:var(--u);color:var(--primary-fg);
+  font-size:.78rem;font-weight:700;animation:bob 1.8s ease-in-out infinite}
+.n-tag::after{content:"";position:absolute;left:50%;bottom:-6px;margin-left:-6px;border:6px solid transparent;border-bottom:0;border-top-color:var(--u)}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes ping{0%{transform:scale(.92);opacity:.85}100%{transform:scale(1.3);opacity:0}}
+@keyframes nodeIn{from{opacity:0;transform:scale(.55)}to{opacity:1;transform:none}}
+.enter .node,.enter .unit,.enter .cell{animation:nodeIn .5s cubic-bezier(.3,1.5,.5,1) both;animation-delay:calc(var(--i,0)*45ms + .08s)}
+.enter .node.next .n-circle{animation:bob 1.8s ease-in-out infinite}
+
+/* combo (consecutive correct answers) */
+.combo{display:inline-flex;align-items:center;gap:3px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;flex:none}
+.combo svg{width:24px;height:24px}
+.combo.hit{animation:comboPop .55s cubic-bezier(.3,1.8,.5,1)}
+@keyframes comboPop{0%{transform:scale(.5) rotate(-12deg)}60%{transform:scale(1.45) rotate(6deg)}100%{transform:scale(1) rotate(0)}}
+
+/* sparkle burst when you get it right */
+.opt.right.mine::after,.s-ans.right::after{content:"";position:absolute;left:50%;top:50%;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;pointer-events:none;
+  box-shadow:0 -46px #ffc94d,32px -32px #ee6f94,46px 0 #4553b5,32px 32px #3fbf8a,0 46px #ffc94d,-32px 32px #ee6f94,-46px 0 #4553b5,-32px -32px #3fbf8a;
+  animation:burst .7s ease-out both}
+@keyframes burst{0%{transform:scale(.2);opacity:1}70%{opacity:1}100%{transform:scale(1.25);opacity:0}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.ring{--pp:var(--p)}.confetti,.petals{display:none}}
 </style>
 </head>
 <body>
@@ -629,21 +683,44 @@ h2{margin:0;font-size:1.35rem}
   var ICON_SHUF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>';
 
   /* ---------- views ---------- */
+  /* x offset (% of width) of each node along the winding path */
+  var PATH_X = [0, 20, 30, 20, 0, -20, -30, -20, 0, 20, 30, 20, 0];
+  var ROW = 124, PATH_TOP = 46;
+
+  function pathView(sc) {
+    var nodes = [], nextIdx = -1, lastDone = -1;
+    UNITS.forEach(function (u, i) {
+      if (save.done[sc + '-' + u.id]) lastDone = i;
+      else if (nextIdx < 0) nextIdx = i;
+    });
+    var n = UNITS.length + 1, H = PATH_TOP + n * ROW;
+    var cx = function (i) { return 50 + PATH_X[i % PATH_X.length]; };
+    var cy = function (i) { return PATH_TOP + i * ROW + 42; };
+    var seg = function (i) {
+      var ym = (cy(i) + cy(i + 1)) / 2;
+      return 'M' + cx(i) + ' ' + cy(i) + 'C' + cx(i) + ' ' + ym + ' ' + cx(i + 1) + ' ' + ym + ' ' + cx(i + 1) + ' ' + cy(i + 1);
+    };
+    var base = '', done = '';
+    for (var i = 0; i < n - 1; i++) { base += seg(i); if (i < lastDone) done += seg(i); }
+    UNITS.forEach(function (u, i) {
+      var d = save.done[sc + '-' + u.id], cs = charsOf(u, sc);
+      var cls = 'node' + (d ? ' done' : '') + (i === nextIdx ? ' next' : '');
+      nodes.push('<button class="' + cls + '" style="--h:' + HUES[i] + ';--i:' + i + ';left:calc(50% + ' + PATH_X[i % PATH_X.length] + '%);top:' + (PATH_TOP + i * ROW) + 'px" data-a="unit" data-id="' + u.id + '">' +
+        (i === nextIdx ? '<span class="n-tag">' + (lastDone < 0 ? '시작!' : '다음') + '</span>' : '') +
+        '<span class="n-circle"><span class="kana">' + cs[0].g + '</span>' + (d ? '<span class="n-star">' + ICON_STAR + '</span>' : '') + '</span>' +
+        '<span class="n-label kana">' + unitName(u, sc) + '</span>' +
+        '<span class="n-stat">' + (d ? '최고 ' + d.best + '/' + TOTAL : cs.map(function (c) { return c.g; }).join('')) + '</span></button>');
+    });
+    var hasDone = doneUnits(sc).length > 0, mi = UNITS.length;
+    nodes.push('<button class="node mixn' + (hasDone && nextIdx < 0 ? ' next' : '') + '" style="--h:230;--i:' + mi + ';left:calc(50% + ' + PATH_X[mi % PATH_X.length] + '%);top:' + (PATH_TOP + mi * ROW) + 'px" data-a="mix"' + (hasDone ? '' : ' disabled') + '>' +
+      '<span class="n-circle">' + ICON_SHUF + '</span><span class="n-label">섞어 풀기</span>' +
+      '<span class="n-stat">' + (hasDone ? '배운 글자 복습' : '한 단원 끝내면 열려요') + '</span></button>');
+    return '<div class="path" style="height:' + H + 'px"><svg class="path-line" viewBox="0 0 100 ' + H + '" preserveAspectRatio="none" aria-hidden="true">' +
+      '<path class="base" d="' + base + '"/><path class="doneline" d="' + done + '"/></svg>' + nodes.join('') + '</div>';
+  }
+
   function homeView() {
     var sc = S.script;
-    var cards = UNITS.map(function (u, i) {
-      var d = save.done[sc + '-' + u.id];
-      var cs = charsOf(u, sc);
-      return '<button class="unit' + (d ? ' done' : '') + '" style="--h:' + HUES[i] + '" data-a="unit" data-id="' + u.id + '">' +
-        '<span class="u-badge">' + cs[0].g + '</span>' +
-        '<span class="unit-name kana">' + unitName(u, sc) + '</span>' +
-        '<span class="unit-sub">' + cs.map(function (c) { return c.g; }).join(' ') + '</span>' +
-        '<span class="unit-stat">' + (d ? d.runs + '회 완료 · 최고 ' + d.best + '/' + TOTAL : '아직 안 했어요') + '</span></button>';
-    }).join('');
-    var hasDone = doneUnits(sc).length > 0;
-    var mix = '<button class="unit mix" style="--h:230" data-a="mix"' + (hasDone ? '' : ' disabled') + '>' +
-      '<span class="u-badge">' + ICON_SHUF + '</span><span class="col"><span class="unit-name">섞어 풀기</span>' +
-      '<span class="unit-sub">' + (hasDone ? '배운 글자만 섞어서 복습해요' : '한 단원을 끝내면 열려요') + '</span></span></button>';
     var sd = save.done.sent;
     var talkDone = DIALOGS.filter(function (d) { return save.done['talk-' + d.id]; }).length;
     var feats = '<div class="feats">' +
@@ -653,14 +730,18 @@ h2{margin:0;font-size:1.35rem}
       '<button class="feat talk" data-a="talks"><span class="feat-ico">' + ICON_CHAT + '</span><span class="feat-name">대화하기</span>' +
       '<span class="feat-sub">상황을 보고 내 대답을 만들어요</span>' +
       '<span class="feat-stat"><span>' + talkDone + '/' + DIALOGS.length + ' 대화 완료</span></span></button></div>';
-    return '<header class="hero"><div class="hero-top"><div><p class="hero-sub">かな れんしゅう</p><h1>가나 연습</h1></div>' +
+    var petals = '';
+    [[8, 9, -1, .9], [24, 12, -6, .7], [46, 10, -3, 1], [66, 13, -8, .75], [82, 9.5, -4, .9], [94, 11, -9, .65]].forEach(function (q) {
+      petals += '<i class="petal" style="left:' + q[0] + '%;--d:' + q[1] + 's;--l:' + q[2] + 's;--s:' + q[3] + '"></i>';
+    });
+    return '<header class="hero"><div class="petals" aria-hidden="true">' + petals + '</div><div class="hero-top"><div><p class="hero-sub">かな れんしゅう</p><h1>가나 연습</h1></div>' +
       '<div class="stats"><span class="pill fire">' + ICON_FIRE + '<span><b>' + currentStreak() + '</b>일</span></span>' +
       '<span class="pill xp">' + ICON_STAR + '<span><b>' + save.xp + '</b> XP</span></span></div></div>' +
       '<div class="tabs" role="group" aria-label="글자 종류">' +
       '<button class="tab" data-a="tab" data-v="hira" aria-pressed="' + (sc === 'hira') + '">히라가나</button>' +
       '<button class="tab" data-a="tab" data-v="kata" aria-pressed="' + (sc === 'kata') + '">가타카나</button></div></header>' +
       '<h3 class="sec">문장 · 대화 연습</h3>' + feats +
-      '<h3 class="sec">글자 단원</h3><div class="units">' + cards + mix + '</div>' +
+      '<h3 class="sec">글자 단원</h3>' + pathView(sc) +
       '<div class="voice">' + ICON_SPK + '<span id="voice-note">' + voiceNote() + '</span><button class="link" data-a="test">소리 들어보기</button></div>';
   }
 
@@ -668,14 +749,19 @@ h2{margin:0;font-size:1.35rem}
     var sc = S.script, u = unitById(S.unit), cs = charsOf(u, sc);
     return '<div class="row"><button class="icon" data-a="home" aria-label="처음으로">' + ICON_BACK + '</button><h2 class="kana">' + unitName(u, sc) + '</h2></div>' +
       '<p class="hint">글자를 누르면 소리가 나요. 한번 들어보고 시작하세요.</p>' +
-      '<div class="grid" style="--h:' + HUES[UNITS.indexOf(u)] + '">' + cs.map(function (c) {
-        return '<button class="cell" data-a="hear" data-t="' + c.h + '"><span class="kana g">' + c.g + '</span><span class="k">' + c.k + '</span></button>';
+      '<div class="grid" style="--h:' + HUES[UNITS.indexOf(u)] + '">' + cs.map(function (c, i) {
+        return '<button class="cell" style="--i:' + i + '" data-a="hear" data-t="' + c.h + '"><span class="kana g">' + c.g + '</span><span class="k">' + c.k + '</span></button>';
       }).join('') + '</div>' +
       '<button class="btn" data-a="start" data-id="' + u.id + '">연습 시작</button>';
   }
 
   function keyOf(q) {
     return q.type === 'read' ? function (c) { return c.k; } : function (c) { return c.g; };
+  }
+
+  function comboHtml(L) {
+    if (!L.combo || L.combo < 2) return '';
+    return '<span class="combo' + (L.phase === 'fb' && L.ok ? ' hit' : '') + '" title="연속 정답">' + ICON_FIRE + '<b>' + L.combo + '</b></span>';
   }
 
   function barStyle(L) {
@@ -695,7 +781,6 @@ h2{margin:0;font-size:1.35rem}
     L.ans.forEach(function (id) { used[id] = true; });
     var ans = L.ans.map(function (id, pos) {
       var mark = fb && !L.ok ? (q.tokens[id].w === (q.ref || q.s.w)[pos] ? ' right' : ' wrong') : '';
-      if (!fb && id === L.pop) mark += ' pop';
       return '<button class="tok' + mark + '" data-a="untok" data-i="' + id + '"' + (fb ? ' disabled' : '') + '>' + q.tokens[id].w + '</button>';
     }).join('');
     var bank = q.tokens.map(function (t) {
@@ -718,7 +803,7 @@ h2{margin:0;font-size:1.35rem}
 
   function lessonShell(L, instr, body, foot) {
     return '<div class="lesson"><div class="l-top"><button class="icon" data-a="quit" aria-label="그만하기">' + ICON_X + '</button>' +
-      '<div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="' + L.total + '" aria-valuenow="' + L.done + '"><i style="' + barStyle(L) + '"></i></div></div>' +
+      '<div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="' + L.total + '" aria-valuenow="' + L.done + '"><i style="' + barStyle(L) + '"></i></div>' + comboHtml(L) + '</div>' +
       '<div class="l-body"><p class="instr">' + instr + '</p>' + body + '</div>' + foot + '</div>' + quitSheet(L);
   }
 
@@ -760,7 +845,7 @@ h2{margin:0;font-size:1.35rem}
     var cards = DIALOGS.map(function (d, i) {
       var r = save.done['talk-' + d.id];
       var n = d.lines.filter(function (l) { return l.a === 'B'; }).length;
-      return '<button class="unit' + (r ? ' done' : '') + '" style="--h:' + HUES[(i + 3) % HUES.length] + '" data-a="talk" data-id="' + d.id + '">' +
+      return '<button class="unit' + (r ? ' done' : '') + '" style="--h:' + HUES[(i + 3) % HUES.length] + ';--i:' + i + '" data-a="talk" data-id="' + d.id + '">' +
         '<span class="u-badge">' + ICON_CHAT + '</span><span class="unit-name">' + d.t + '</span>' +
         '<span class="unit-sub kana" style="letter-spacing:0">' + d.lines[0].w.join('') + '</span>' +
         '<span class="unit-stat">' + (r ? r.runs + '회 완료 · 최고 ' + r.best + '/' + n : '아직 안 했어요') + '</span></button>';
@@ -785,7 +870,7 @@ h2{margin:0;font-size:1.35rem}
     var opts = q.opts.map(function (o, i) {
       var cls = 'opt';
       if (L.phase === 'fb') {
-        if (key(o) === key(q.item)) cls += ' right';
+        if (key(o) === key(q.item)) cls += i === L.selected ? ' right mine' : ' right';
         else if (i === L.selected) cls += ' wrong';
       } else if (i === L.selected) cls += ' sel';
       return '<button class="' + cls + '" data-a="opt" data-i="' + i + '"' + (L.phase === 'fb' ? ' disabled' : '') + '>' +
@@ -802,7 +887,7 @@ h2{margin:0;font-size:1.35rem}
     }
     var quit = quitSheet(L);
     return '<div class="lesson"><div class="l-top"><button class="icon" data-a="quit" aria-label="그만하기">' + ICON_X + '</button>' +
-      '<div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="' + L.total + '" aria-valuenow="' + L.done + '"><i style="' + barStyle(L) + '"></i></div></div>' +
+      '<div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="' + L.total + '" aria-valuenow="' + L.done + '"><i style="' + barStyle(L) + '"></i></div>' + comboHtml(L) + '</div>' +
       '<div class="l-body"><p class="instr">' + instr + '</p><div class="prompt">' + prompt + '</div><div class="opts">' + opts + '</div></div>' +
       foot + '</div>' + quit;
   }
@@ -936,6 +1021,7 @@ h2{margin:0;font-size:1.35rem}
       if (n > bestN) { bestN = n; best = alt; }
     });
     L.ok = !!hit;
+    L.combo = L.ok ? (L.combo || 0) + 1 : 0;
     L.phase = 'fb';
     q.match = hit;
     q.ref = best.w;
@@ -975,6 +1061,7 @@ h2{margin:0;font-size:1.35rem}
     if (!L.ans.length || L.phase !== 'ask') return;
     L.ok = L.ans.map(function (id) { return q.tokens[id].w; }).join('|') === q.s.w.join('|');
     L.phase = 'fb';
+    L.combo = L.ok ? (L.combo || 0) + 1 : 0;
     if (L.ok) {
       L.done++;
       if (q.first) L.firstOK++;
@@ -1003,6 +1090,7 @@ h2{margin:0;font-size:1.35rem}
     var key = keyOf(q);
     var ok = key(q.opts[L.selected]) === key(q.item);
     L.ok = ok;
+    L.combo = ok ? (L.combo || 0) + 1 : 0;
     L.phase = 'fb';
     if (ok) {
       L.done++;
@@ -1042,6 +1130,16 @@ h2{margin:0;font-size:1.35rem}
     render();
   }
 
+  /* slide a re-created element from where its old copy was (the token "flies" to its new place) */
+  var calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function flyFrom(r0, sel) {
+    var t = app.querySelector(sel);
+    if (calm || !t || !t.animate) return;
+    var r1 = t.getBoundingClientRect();
+    t.animate([{ transform: 'translate(' + (r0.left - r1.left) + 'px,' + (r0.top - r1.top) + 'px) scale(1.06)' }, { transform: 'none' }],
+      { duration: 300, easing: 'cubic-bezier(.25,1.3,.5,1)' });
+  }
+
   /* ---------- events ---------- */
   app.addEventListener('click', function (e) {
     var el = e.target.closest('[data-a]');
@@ -1053,8 +1151,8 @@ h2{margin:0;font-size:1.35rem}
     else if (a === 'sent') { startSent(); }
     else if (a === 'talks') { S.view = 'talks'; render(); }
     else if (a === 'talk') { startTalk(el.getAttribute('data-id')); }
-    else if (a === 'tok') { if (S.L.phase === 'ask') { S.L.pop = +el.getAttribute('data-i'); S.L.ans.push(S.L.pop); render(); } }
-    else if (a === 'untok') { if (S.L.phase === 'ask') { var ui = +el.getAttribute('data-i'); S.L.pop = null; S.L.ans = S.L.ans.filter(function (x) { return x !== ui; }); render(); } }
+    else if (a === 'tok') { if (S.L.phase === 'ask') { var r0 = el.getBoundingClientRect(), tid = +el.getAttribute('data-i'); S.L.ans.push(tid); render(); flyFrom(r0, '.s-ans .tok[data-i="' + tid + '"]'); } }
+    else if (a === 'untok') { if (S.L.phase === 'ask') { var r1 = el.getBoundingClientRect(), ui = +el.getAttribute('data-i'); S.L.ans = S.L.ans.filter(function (x) { return x !== ui; }); render(); flyFrom(r1, '.s-bank .tok[data-i="' + ui + '"]'); } }
     else if (a === 'start') { startLesson(el.getAttribute('data-id')); }
     else if (a === 'home') { S.view = 'home'; render(); }
     else if (a === 'hear') { speak(el.getAttribute('data-t')); el.classList.remove('tap'); void el.offsetWidth; el.classList.add('tap'); }
