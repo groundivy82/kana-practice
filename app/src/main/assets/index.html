@@ -206,6 +206,32 @@ h2{margin:0;font-size:1.35rem}
 .bub-ko{font-size:.85rem;color:var(--muted)}
 .bub.b .bub-ko{color:inherit;opacity:.82}
 
+/* review + switch */
+.reviewbar{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:22px;padding:11px 14px 11px 11px;box-shadow:0 4px 0 var(--line)}
+.reviewbar:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 var(--line)}
+.reviewbar:disabled{opacity:.6;border-style:dashed;box-shadow:none}
+.rv-ico{display:grid;place-items:center;width:46px;height:46px;border-radius:16px;background:linear-gradient(150deg,#e08a22,#a94d0c);color:#fff;flex:none}
+.rv-ico svg{width:24px;height:24px}
+.rv-txt{display:flex;flex-direction:column;min-width:0;flex:1;line-height:1.3}
+.rv-txt b{font-size:1.02rem}
+.rv-txt span{font-size:.8rem;color:var(--muted)}
+.rv-badge{min-width:28px;height:28px;padding:0 8px;border-radius:99px;display:grid;place-items:center;background:var(--accent);color:#fff;font-weight:700;font-size:.85rem}
+.feat.revk{background:linear-gradient(150deg,#df8620,#a14a0b)}
+.feat.revs{background:linear-gradient(150deg,#2c9f84,#16705d)}
+.feat:disabled{opacity:.5;box-shadow:none}
+.wchips{display:flex;flex-wrap:wrap;gap:8px}
+.wchip{display:flex;flex-direction:column;align-items:center;min-width:58px;padding:8px 10px;border-radius:16px;background:var(--surface);border:2px solid var(--line);box-shadow:0 3px 0 var(--line)}
+.wchip .kana{font-size:1.7rem;line-height:1.2;color:var(--accent)}
+.wchip small{color:var(--muted);font-size:.78rem}
+.wlist{display:flex;flex-direction:column;gap:8px}
+.wl{background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:8px 14px}
+.wl .kana{font-weight:500;font-size:1.1rem}
+.wl small{display:block;color:var(--muted)}
+.switch{position:relative;width:52px;height:30px;border-radius:99px;border:0;background:var(--line);flex:none;transition:background .2s}
+.switch::after{content:"";position:absolute;left:3px;top:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.25);transition:transform .25s cubic-bezier(.3,1.5,.5,1)}
+.switch[aria-pressed="true"]{background:var(--ok)}
+.switch[aria-pressed="true"]::after{transform:translateX(22px)}
+
 /* quit sheet */
 .backdrop{position:fixed;inset:0;background:rgba(10,14,40,.55);display:flex;align-items:flex-end;justify-content:center;z-index:20}
 .sheet{position:relative;width:100%;max-width:560px;background:var(--surface);border-radius:28px 28px 0 0;padding:26px 16px 20px;
@@ -434,7 +460,80 @@ h2{margin:0;font-size:1.35rem}
     { ko: '이것은 누구의 것입니까', w: ['これ', 'は', 'だれ', 'の', 'ですか'] },
     { ko: '이것은 얼마입니까', w: ['これ', 'は', 'いくら', 'ですか'] },
     { ko: '역은 어디입니까', w: ['えき', 'は', 'どこ', 'ですか'] },
-    { ko: '화장실은 어디입니까', w: ['おてあらい', 'は', 'どこ', 'ですか'] }
+    { ko: '화장실은 어디입니까', w: ['おてあらい', 'は', 'どこ', 'ですか'] },
+    /* 시간·장소 */
+    { ko: '저는 아침에 밥을 먹습니다', w: ['わたし', 'は', 'あさ', 'に', 'ごはん', 'を', 'たべます'] },
+    { ko: '저는 밤에 책을 읽습니다', w: ['わたし', 'は', 'よる', 'に', 'ほん', 'を', 'よみます'] },
+    { ko: '지금은 아침입니다', w: ['いま', 'は', 'あさ', 'です'] },
+    { ko: '지금은 밤입니다', w: ['いま', 'は', 'よる', 'です'] },
+    { ko: '내일은 휴일입니다', w: ['あした', 'は', 'やすみ', 'です'] },
+    { ko: '여기는 역입니다', w: ['ここ', 'は', 'えき', 'です'] },
+    { ko: '거기는 가게입니다', w: ['そこ', 'は', 'みせ', 'です'] },
+    { ko: '저기는 바다입니다', w: ['あそこ', 'は', 'うみ', 'です'] },
+    { ko: '화장실은 저기입니다', w: ['おてあらい', 'は', 'あそこ', 'です'] },
+    { ko: '우리 집은 역 근처입니다', w: ['わたし', 'の', 'いえ', 'は', 'えき', 'の', 'ちかく', 'です'] },
+    /* 사람·소유 */
+    { ko: '이것은 제 책입니다', w: ['これ', 'は', 'わたし', 'の', 'ほん', 'です'] },
+    { ko: '그것은 당신의 우산입니다', w: ['それ', 'は', 'あなた', 'の', 'かさ', 'です'] },
+    { ko: '제 친구는 건강합니다', w: ['わたし', 'の', 'ともだち', 'は', 'げんき', 'です'] },
+    { ko: '선생님은 지금 집에 있습니다', w: ['せんせい', 'は', 'いま', 'うち', 'に', 'います'] },
+    { ko: '친구는 역에 있습니다', w: ['ともだち', 'は', 'えき', 'に', 'います'] },
+    { ko: '물고기는 바다에 있습니다', w: ['さかな', 'は', 'うみ', 'に', 'います'] },
+    { ko: '책은 가방 안에 있습니다', w: ['ほん', 'は', 'かばん', 'の', 'なか', 'に', 'あります'] },
+    /* 형용사 */
+    { ko: '저 개는 큽니다', w: ['あの', 'いぬ', 'は', 'おおきい', 'です'] },
+    { ko: '이 고양이는 귀엽습니다', w: ['この', 'ねこ', 'は', 'かわいい', 'です'] },
+    { ko: '저 사람은 상냥합니다', w: ['あの', 'ひと', 'は', 'やさしい', 'です'] },
+    { ko: '이 물은 차갑습니다', w: ['この', 'みず', 'は', 'つめたい', 'です'] },
+    { ko: '이 밥은 맛있습니다', w: ['この', 'ごはん', 'は', 'おいしい', 'です'] },
+    { ko: '이 책은 오래됐습니다', w: ['この', 'ほん', 'は', 'ふるい', 'です'] },
+    { ko: '저 집은 큽니다', w: ['あの', 'いえ', 'は', 'おおきい', 'です'] },
+    { ko: '그 우산은 새것입니다', w: ['その', 'かさ', 'は', 'あたらしい', 'です'] },
+    { ko: '사과는 빨갛습니다', w: ['りんご', 'は', 'あかい', 'です'] },
+    { ko: '밤하늘은 아름답습니다', w: ['よる', 'の', 'そら', 'は', 'きれい', 'です'] },
+    { ko: '아침은 춥습니다', w: ['あさ', 'は', 'さむい', 'です'] },
+    { ko: '겨울 바다는 춥습니다', w: ['ふゆ', 'の', 'うみ', 'は', 'さむい', 'です'] },
+    { ko: '여름 바다는 덥습니다', w: ['なつ', 'の', 'うみ', 'は', 'あつい', 'です'] },
+    { ko: '눈 쌓인 산은 하얗습니다', w: ['ゆき', 'の', 'やま', 'は', 'しろい', 'です'] },
+    /* 함께·장소·동작 */
+    { ko: '저는 당신과 갑니다', w: ['わたし', 'は', 'あなた', 'と', 'いきます'] },
+    { ko: '저는 친구와 밥을 먹습니다', w: ['わたし', 'は', 'ともだち', 'と', 'ごはん', 'を', 'たべます'] },
+    { ko: '저는 어머니와 가게에 갑니다', w: ['わたし', 'は', 'おかあさん', 'と', 'みせ', 'に', 'いきます'] },
+    { ko: '저는 개와 걷습니다', w: ['わたし', 'は', 'いぬ', 'と', 'あるきます'] },
+    { ko: '저는 가족과 바다에 갑니다', w: ['わたし', 'は', 'かぞく', 'と', 'うみ', 'に', 'いきます'] },
+    { ko: '저는 바다에서 헤엄칩니다', w: ['わたし', 'は', 'うみ', 'で', 'およぎます'] },
+    { ko: '저는 집에서 책을 읽습니다', w: ['わたし', 'は', 'いえ', 'で', 'ほん', 'を', 'よみます'] },
+    { ko: '저는 역에서 친구를 만납니다', w: ['わたし', 'は', 'えき', 'で', 'ともだち', 'に', 'あいます'] },
+    { ko: '저는 강을 봅니다', w: ['わたし', 'は', 'かわ', 'を', 'みます'] },
+    { ko: '저는 별을 봅니다', w: ['わたし', 'は', 'ほし', 'を', 'みます'] },
+    { ko: '저는 하늘을 봅니다', w: ['わたし', 'は', 'そら', 'を', 'みます'] },
+    { ko: '저는 꽃을 삽니다', w: ['わたし', 'は', 'はな', 'を', 'かいます'] },
+    { ko: '저는 빵을 삽니다', w: ['わたし', 'は', 'ぱん', 'を', 'かいます'] },
+    { ko: '저는 지금 집에 돌아갑니다', w: ['わたし', 'は', 'いま', 'うち', 'に', 'かえります'] },
+    { ko: '어머니는 가게에 갑니다', w: ['おかあさん', 'は', 'みせ', 'に', 'いきます'] },
+    { ko: '아버지는 지금 잡니다', w: ['おとうさん', 'は', 'いま', 'ねます'] },
+    { ko: '친구는 내일 옵니다', w: ['ともだち', 'は', 'あした', 'きます'] },
+    { ko: '새는 하늘을 납니다', w: ['とり', 'は', 'そら', 'を', 'とびます'] },
+    { ko: '개는 물을 마십니다', w: ['いぬ', 'は', 'みず', 'を', 'のみます'] },
+    /* 좋아하다·원하다 */
+    { ko: '저는 귤을 좋아합니다', w: ['わたし', 'は', 'みかん', 'が', 'すきです'] },
+    { ko: '저는 초밥을 좋아합니다', w: ['わたし', 'は', 'すし', 'が', 'すきです'] },
+    { ko: '저는 노래를 좋아합니다', w: ['わたし', 'は', 'うた', 'が', 'すきです'] },
+    { ko: '저는 차를 갖고 싶습니다', w: ['わたし', 'は', 'くるま', 'が', 'ほしい', 'です'] },
+    { ko: '저는 물이 마시고 싶습니다', w: ['わたし', 'は', 'みず', 'が', 'ほしい', 'です'] },
+    { ko: '아버지는 차를 좋아합니다', w: ['おとうさん', 'は', 'くるま', 'が', 'すきです'] },
+    { ko: '어머니는 꽃을 좋아합니다', w: ['おかあさん', 'は', 'はな', 'が', 'すきです'] },
+    { ko: '고양이는 생선을 좋아합니다', w: ['ねこ', 'は', 'さかな', 'が', 'すきです'] },
+    /* 질문 */
+    { ko: '당신은 누구입니까', w: ['あなた', 'は', 'だれ', 'ですか'] },
+    { ko: '당신은 건강하십니까', w: ['あなた', 'は', 'げんき', 'ですか'] },
+    { ko: '저것은 누구의 차입니까', w: ['あれ', 'は', 'だれ', 'の', 'くるま', 'ですか'] },
+    { ko: '이름은 무엇입니까', w: ['なまえ', 'は', 'なん', 'ですか'] },
+    { ko: '내일은 무엇을 합니까', w: ['あした', 'は', 'なに', 'を', 'します', 'か'] },
+    { ko: '당신은 어디에 갑니까', w: ['あなた', 'は', 'どこ', 'に', 'いきます', 'か'] },
+    { ko: '당신은 무엇을 먹습니까', w: ['あなた', 'は', 'なに', 'を', 'たべます', 'か'] },
+    { ko: '당신은 무엇을 좋아합니까', w: ['あなた', 'は', 'なに', 'が', 'すきです', 'か'] },
+    { ko: '열쇠는 어디에 있습니까', w: ['かぎ', 'は', 'どこ', 'に', 'あります', 'か'] },
   ];
   var TOTAL_S = 10;
   /* 대화하기: A = 상대(일본어+뜻 표시), B = 나. B는 상황(hint)만 보고 alts 중 어느 것이든 만들면 통과 */
@@ -575,6 +674,144 @@ h2{margin:0;font-size:1.35rem}
         { w: ['どういたしまして'], ko: '천만에요' },
         { w: ['いい', 'です', 'よ'], ko: '괜찮아요' }] }
     ] }
+    ,{ id: 'd11', t: '약속 잡기', lines: [
+      { a: 'A', w: ['あした', 'あえます', 'か'], ko: '내일 만날 수 있어요?' },
+      { a: 'B', hint: '좋다고 대답해 보세요', alts: [
+        { w: ['はい', 'あえます'], ko: '네, 만날 수 있어요' },
+        { w: ['はい', 'いい', 'です', 'よ'], ko: '네, 좋아요' },
+        { w: ['いい', 'です', 'よ'], ko: '좋아요' }] },
+      { a: 'A', w: ['えき', 'で', 'あいます', 'か'], ko: '역에서 만날까요?' },
+      { a: 'B', hint: '역에서 만나자고 해 보세요', alts: [
+        { w: ['えき', 'で', 'あいます'], ko: '역에서 만나요' },
+        { w: ['はい', 'えき', 'で', 'あいます'], ko: '네, 역에서 만나요' },
+        { w: ['えき', 'が', 'いい', 'です'], ko: '역이 좋아요' }] },
+      { a: 'A', w: ['では', 'また', 'あした'], ko: '그럼 내일 봐요' },
+      { a: 'B', hint: '인사해 보세요', alts: [
+        { w: ['また', 'あした'], ko: '내일 봐요' },
+        { w: ['さようなら'], ko: '안녕히 가세요' },
+        { w: ['では', 'また'], ko: '그럼 또 봐요' }] }
+    ] }
+    ,{ id: 'd12', t: '이름 묻기', lines: [
+      { a: 'A', w: ['おなまえ', 'は', 'なん', 'ですか'], ko: '성함이 어떻게 되세요?' },
+      { a: 'B', hint: '이름(아키코)을 말해 보세요', alts: [
+        { w: ['わたし', 'は', 'あきこ', 'です'], ko: '저는 아키코입니다' },
+        { w: ['あきこ', 'です'], ko: '아키코입니다' },
+        { w: ['あきこ', 'と', 'いいます'], ko: '아키코라고 합니다' }] },
+      { a: 'A', w: ['いい', 'おなまえ', 'ですね'], ko: '좋은 이름이네요' },
+      { a: 'B', hint: '기뻐하며 인사해 보세요', alts: [
+        { w: ['ありがとう', 'ございます'], ko: '감사합니다' },
+        { w: ['うれしい', 'です'], ko: '기쁩니다' },
+        { w: ['ありがとう'], ko: '고마워요' }] }
+    ] }
+    ,{ id: 'd13', t: '집에 돌아와서', lines: [
+      { a: 'A', w: ['ただいま'], ko: '다녀왔습니다' },
+      { a: 'B', hint: '어서 오라고 맞이해 보세요', alts: [
+        { w: ['おかえりなさい'], ko: '어서 와요' },
+        { w: ['おかえり'], ko: '어서 와' }] },
+      { a: 'A', w: ['おなか', 'が', 'すきました'], ko: '배가 고파요' },
+      { a: 'B', hint: '밥이 있다고 말해 보세요', alts: [
+        { w: ['ごはん', 'が', 'あります'], ko: '밥이 있어요' },
+        { w: ['ごはん', 'です', 'よ'], ko: '밥이에요' },
+        { w: ['ごはん', 'を', 'つくります'], ko: '밥을 만들게요' }] },
+      { a: 'A', w: ['いただきます'], ko: '잘 먹겠습니다' },
+      { a: 'B', hint: '맛있게 먹으라고 해 보세요', alts: [
+        { w: ['どうぞ'], ko: '드세요' },
+        { w: ['おいしい', 'です', 'よ'], ko: '맛있어요' }] }
+    ] }
+    ,{ id: 'd14', t: '좋아하는 음식', lines: [
+      { a: 'A', w: ['すし', 'は', 'すきです', 'か'], ko: '초밥 좋아하세요?' },
+      { a: 'B', hint: '좋아한다고 대답해 보세요', alts: [
+        { w: ['はい', 'すきです'], ko: '네, 좋아해요' },
+        { w: ['はい', 'すし', 'が', 'すきです'], ko: '네, 초밥을 좋아해요' },
+        { w: ['わたし', 'は', 'すし', 'が', 'すきです'], ko: '저는 초밥을 좋아해요' }] },
+      { a: 'A', w: ['わたし', 'も', 'すきです'], ko: '저도 좋아해요' },
+      { a: 'B', hint: '언제 먹을지 물어보세요', alts: [
+        { w: ['いつ', 'たべます', 'か'], ko: '언제 먹을까요?' },
+        { w: ['あした', 'たべます', 'か'], ko: '내일 먹을까요?' },
+        { w: ['いつ', 'です', 'か'], ko: '언제예요?' }] },
+      { a: 'A', w: ['あした', 'です'], ko: '내일이요' },
+      { a: 'B', hint: '좋다고 말해 보세요', alts: [
+        { w: ['いい', 'ですね'], ko: '좋네요' },
+        { w: ['はい', 'いい', 'です'], ko: '네, 좋아요' },
+        { w: ['たのしい', 'ですね'], ko: '즐겁네요' }] }
+    ] }
+    ,{ id: 'd15', t: '화장실 찾기', lines: [
+      { a: 'A', w: ['どうしました', 'か'], ko: '무슨 일이세요?' },
+      { a: 'B', hint: '화장실이 어디인지 물어보세요', alts: [
+        { w: ['おてあらい', 'は', 'どこ', 'ですか'], ko: '화장실은 어디입니까?' },
+        { w: ['すみません', 'おてあらい', 'は', 'どこ', 'ですか'], ko: '실례합니다. 화장실은 어디입니까?' }] },
+      { a: 'A', w: ['あの', 'みち', 'の', 'さき', 'です'], ko: '저 길 끝에 있어요' },
+      { a: 'B', hint: '고맙다고 말해 보세요', alts: [
+        { w: ['ありがとう', 'ございます'], ko: '감사합니다' },
+        { w: ['ありがとう'], ko: '고마워요' }] }
+    ] }
+    ,{ id: 'd16', t: '선생님 찾기', lines: [
+      { a: 'A', w: ['せんせい', 'は', 'どこ', 'ですか'], ko: '선생님은 어디 계세요?' },
+      { a: 'B', hint: '저기에 계신다고 말해 보세요', alts: [
+        { w: ['あそこ', 'に', 'います'], ko: '저기에 계세요' },
+        { w: ['せんせい', 'は', 'あそこ', 'に', 'います'], ko: '선생님은 저기에 계세요' },
+        { w: ['あそこ', 'です'], ko: '저기예요' }] },
+      { a: 'A', w: ['ありがとう', 'ございます'], ko: '감사합니다' },
+      { a: 'B', hint: '천만에요라고 해 보세요', alts: [
+        { w: ['どういたしまして'], ko: '천만에요' },
+        { w: ['いい', 'です', 'よ'], ko: '괜찮아요' }] }
+    ] }
+    ,{ id: 'd17', t: '고양이 이야기', lines: [
+      { a: 'A', w: ['ねこ', 'が', 'すきです', 'か'], ko: '고양이 좋아하세요?' },
+      { a: 'B', hint: '좋아한다고 대답해 보세요', alts: [
+        { w: ['はい', 'ねこ', 'が', 'すきです'], ko: '네, 고양이를 좋아해요' },
+        { w: ['はい', 'すきです'], ko: '네, 좋아해요' },
+        { w: ['わたし', 'は', 'ねこ', 'が', 'すきです'], ko: '저는 고양이를 좋아해요' }] },
+      { a: 'A', w: ['わたし', 'の', 'ねこ', 'は', 'かわいい', 'です'], ko: '제 고양이는 귀여워요' },
+      { a: 'B', hint: '귀엽겠다고 말해 보세요', alts: [
+        { w: ['かわいい', 'ですね'], ko: '귀엽네요' },
+        { w: ['ねこ', 'は', 'かわいい', 'です'], ko: '고양이는 귀여워요' },
+        { w: ['いい', 'ですね'], ko: '좋네요' }] },
+      { a: 'A', w: ['ありがとう', 'ございます'], ko: '감사합니다' },
+      { a: 'B', hint: '천만에요라고 해 보세요', alts: [
+        { w: ['どういたしまして'], ko: '천만에요' },
+        { w: ['いい', 'です', 'よ'], ko: '괜찮아요' }] }
+    ] }
+    ,{ id: 'd18', t: '맑은 날 바다', lines: [
+      { a: 'A', w: ['そら', 'は', 'あおい', 'です', 'ね'], ko: '하늘이 파랗네요' },
+      { a: 'B', hint: '날씨가 좋다고 말해 보세요', alts: [
+        { w: ['いい', 'てんき', 'です', 'ね'], ko: '날씨 좋네요' },
+        { w: ['いい', 'てんき', 'です'], ko: '날씨가 좋아요' },
+        { w: ['きれい', 'です', 'ね'], ko: '예쁘네요' }] },
+      { a: 'A', w: ['うみ', 'に', 'いきます', 'か'], ko: '바다에 갈까요?' },
+      { a: 'B', hint: '가자고 대답해 보세요', alts: [
+        { w: ['はい', 'いきます'], ko: '네, 가요' },
+        { w: ['いきます'], ko: '가요' },
+        { w: ['はい', 'いきます', 'よ'], ko: '네, 갈게요' }] },
+      { a: 'A', w: ['では', 'あした'], ko: '그럼 내일요' },
+      { a: 'B', hint: '인사해 보세요', alts: [
+        { w: ['また', 'あした'], ko: '내일 봐요' },
+        { w: ['さようなら'], ko: '안녕히 가세요' }] }
+    ] }
+    ,{ id: 'd19', t: '신발 사기', lines: [
+      { a: 'A', w: ['なに', 'が', 'ほしい', 'ですか'], ko: '무엇이 필요하세요?' },
+      { a: 'B', hint: '신발이 필요하다고 말해 보세요', alts: [
+        { w: ['くつ', 'が', 'ほしい', 'です'], ko: '신발이 필요해요' },
+        { w: ['くつ', 'を', 'ください'], ko: '신발을 주세요' },
+        { w: ['わたし', 'は', 'くつ', 'が', 'ほしい', 'です'], ko: '저는 신발이 필요해요' }] },
+      { a: 'A', w: ['これ', 'は', 'どう', 'ですか'], ko: '이건 어때요?' },
+      { a: 'B', hint: '마음에 든다고 말해 보세요', alts: [
+        { w: ['いい', 'ですね'], ko: '좋네요' },
+        { w: ['かわいい', 'ですね'], ko: '귀엽네요' },
+        { w: ['これ', 'を', 'ください'], ko: '이걸 주세요' }] },
+      { a: 'A', w: ['ありがとう', 'ございます'], ko: '감사합니다' }
+    ] }
+    ,{ id: 'd20', t: '자기 전에', lines: [
+      { a: 'A', w: ['もう', 'ねます', 'か'], ko: '벌써 주무세요?' },
+      { a: 'B', hint: '잔다고 대답해 보세요', alts: [
+        { w: ['はい', 'ねます'], ko: '네, 잘게요' },
+        { w: ['はい', 'もう', 'ねます'], ko: '네, 이제 잘게요' },
+        { w: ['もう', 'ねます'], ko: '이제 잘게요' }] },
+      { a: 'A', w: ['おやすみ', 'なさい'], ko: '안녕히 주무세요' },
+      { a: 'B', hint: '밤 인사를 해 보세요', alts: [
+        { w: ['おやすみ', 'なさい'], ko: '안녕히 주무세요' },
+        { w: ['おやすみ'], ko: '잘 자' }] }
+    ] }
   ];
 
   function conv(s) {
@@ -608,7 +845,7 @@ h2{margin:0;font-size:1.35rem}
 
   /* ---------- saved progress (this browser only) ---------- */
   var KEY = 'kana-practice-v1';
-  var save = { xp: 0, streak: 0, last: '', done: {} };
+  var save = { xp: 0, streak: 0, last: '', done: {}, weak: {}, mute: false };
   try {
     var raw = localStorage.getItem(KEY);
     if (raw) { var p = JSON.parse(raw); for (var k in p) save[k] = p[k]; }
@@ -667,6 +904,40 @@ h2{margin:0;font-size:1.35rem}
     return jaVoice ? '일본어 음성을 찾았어요' : '일본어 음성을 못 찾았어요. 소리가 안 나면 기기 설정에서 일본어 음성을 추가하세요';
   }
 
+  /* ---------- sound effects (synthesized in the page, no files) + vibration ---------- */
+  var actx = null;
+  function tone(f, t, d, type, v) {
+    var o = actx.createOscillator(), g = actx.createGain();
+    o.type = type; o.frequency.value = f;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(v, t + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+    o.connect(g); g.connect(actx.destination);
+    o.start(t); o.stop(t + d + 0.03);
+  }
+  function sfx(kind) {
+    if (save.mute) return;
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (AC) {
+        actx = actx || new AC();
+        if (actx.state === 'suspended') actx.resume();
+        var t = actx.currentTime;
+        if (kind === 'ok') { tone(659, t, 0.14, 'triangle', 0.2); tone(988, t + 0.1, 0.24, 'triangle', 0.2); }
+        else if (kind === 'bad') { tone(196, t, 0.2, 'sawtooth', 0.1); tone(147, t + 0.15, 0.28, 'sawtooth', 0.1); }
+        else if (kind === 'done') { [523, 659, 784, 1047].forEach(function (f, i) { tone(f, t + i * 0.12, 0.28, 'triangle', 0.2); }); }
+        else if (kind === 'tap') { tone(560, t, 0.05, 'sine', 0.1); }
+      }
+    } catch (e) {}
+    try {
+      if (navigator.vibrate) navigator.vibrate({ ok: 22, bad: [40, 50, 40], done: [30, 60, 30, 60, 90], tap: 8 }[kind] || 0);
+    } catch (e) {}
+  }
+  /* let the effect play before the Japanese voice starts */
+  function speakSoon(text) {
+    if (save.mute) speak(text); else setTimeout(function () { speak(text); }, 380);
+  }
+
   /* ---------- state ---------- */
   var S = { view: 'home', script: 'hira', unit: null, L: null };
   var app = document.getElementById('app');
@@ -680,6 +951,7 @@ h2{margin:0;font-size:1.35rem}
   var ICON_STAR = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/></svg>';
   var ICON_BLOCKS = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="2.5" y="4" width="9" height="6" rx="2"/><rect x="13" y="4" width="8.5" height="6" rx="2" opacity=".65"/><rect x="2.5" y="12" width="5.5" height="6" rx="2" opacity=".65"/><rect x="9.5" y="12" width="12" height="6" rx="2"/></svg>';
   var ICON_CHAT = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4.5h16a1.5 1.5 0 011.5 1.5v9a1.5 1.5 0 01-1.5 1.5h-7.6L7 20.5v-4H4A1.5 1.5 0 012.5 15V6A1.5 1.5 0 014 4.5z"/></svg>';
+  var ICON_REVIEW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 10-2.3 5.7"/><path d="M20 4v7h-7"/></svg>';
   var ICON_SHUF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>';
 
   /* ---------- views ---------- */
@@ -719,6 +991,32 @@ h2{margin:0;font-size:1.35rem}
       '<path class="base" d="' + base + '"/><path class="doneline" d="' + done + '"/></svg>' + nodes.join('') + '</div>';
   }
 
+  function reviewBar() {
+    var wk = weakKana('hira').length, ws = weakSents().length, n = wk + ws;
+    return '<button class="reviewbar" data-a="review"' + (n ? '' : ' disabled') + '><span class="rv-ico">' + ICON_REVIEW + '</span>' +
+      '<span class="rv-txt"><b>오답 복습</b><span>' + (n ? '틀린 글자 ' + wk + '개 · 문장 ' + ws + '개' : '틀린 문제가 생기면 열려요') + '</span></span>' +
+      (n ? '<span class="rv-badge">' + n + '</span>' : '') + '</button>';
+  }
+
+  function reviewView() {
+    var sc = S.script, ks = weakKana(sc), ss = weakSents();
+    var chips = ks.length ? ks.map(function (c) {
+      return '<button class="wchip" data-a="hear" data-t="' + c.h + '"><span class="kana">' + c.g + '</span><small>' + c.k + '</small></button>';
+    }).join('') : '<p class="hint">없어요</p>';
+    var list = ss.length ? ss.slice(0, 6).map(function (x) {
+      return '<div class="wl"><span class="kana">' + x.w.join('') + '</span><small>' + x.ko + '</small></div>';
+    }).join('') + (ss.length > 6 ? '<p class="hint">…외 ' + (ss.length - 6) + '개</p>' : '') : '<p class="hint">없어요</p>';
+    return '<div class="row"><button class="icon" data-a="home" aria-label="처음으로">' + ICON_BACK + '</button><h2>오답 복습</h2></div>' +
+      '<p class="hint">틀린 문제를 처음 시도에서 맞히면 목록에서 빠져요.</p>' +
+      '<div class="feats">' +
+      '<button class="feat revk" data-a="revk"' + (ks.length ? '' : ' disabled') + '><span class="feat-ico">' + ICON_REVIEW + '</span><span class="feat-name">글자 복습</span>' +
+      '<span class="feat-sub">틀린 글자를 소리·모양으로 다시 풀어요</span><span class="feat-stat"><span>' + ks.length + '개</span></span></button>' +
+      '<button class="feat revs" data-a="revs"' + (ss.length ? '' : ' disabled') + '><span class="feat-ico">' + ICON_BLOCKS + '</span><span class="feat-name">문장 복습</span>' +
+      '<span class="feat-sub">틀린 문장을 다시 만들어요</span><span class="feat-stat"><span>' + ss.length + '개</span></span></button></div>' +
+      '<h3 class="sec">자주 틀리는 글자</h3><div class="wchips">' + chips + '</div>' +
+      '<h3 class="sec">틀린 문장</h3><div class="wlist">' + list + '</div>';
+  }
+
   function homeView() {
     var sc = S.script;
     var sd = save.done.sent;
@@ -740,9 +1038,10 @@ h2{margin:0;font-size:1.35rem}
       '<div class="tabs" role="group" aria-label="글자 종류">' +
       '<button class="tab" data-a="tab" data-v="hira" aria-pressed="' + (sc === 'hira') + '">히라가나</button>' +
       '<button class="tab" data-a="tab" data-v="kata" aria-pressed="' + (sc === 'kata') + '">가타카나</button></div></header>' +
-      '<h3 class="sec">문장 · 대화 연습</h3>' + feats +
+      '<h3 class="sec">문장 · 대화 연습</h3>' + feats + reviewBar() +
       '<h3 class="sec">글자 단원</h3>' + pathView(sc) +
-      '<div class="voice">' + ICON_SPK + '<span id="voice-note">' + voiceNote() + '</span><button class="link" data-a="test">소리 들어보기</button></div>';
+      '<div class="voice">' + ICON_SPK + '<span id="voice-note">' + voiceNote() + '</span><button class="link" data-a="test">소리 들어보기</button></div>' +
+      '<div class="voice">' + ICON_SPK + '<span>효과음 · 진동</span><button class="switch" data-a="sfx" aria-pressed="' + (!save.mute) + '" aria-label="효과음과 진동"></button></div>';
   }
 
   function unitView() {
@@ -916,8 +1215,40 @@ h2{margin:0;font-size:1.35rem}
     app.classList.remove('enter', 'enter-q');
     if (changed) app.classList.add('enter');
     else if (nextQuestion === true) app.classList.add('enter-q');
-    app.innerHTML = v === 'home' ? homeView() : v === 'talks' ? talksView() : v === 'unit' ? unitView() : v === 'lesson' ? (S.L.mode === 'sent' ? sentView() : S.L.mode === 'talk' ? talkView() : lessonView()) : resultView();
+    app.innerHTML = v === 'home' ? homeView() : v === 'talks' ? talksView() : v === 'review' ? reviewView() : v === 'unit' ? unitView() : v === 'lesson' ? (S.L.mode === 'sent' ? sentView() : S.L.mode === 'talk' ? talkView() : lessonView()) : resultView();
     if (changed) { window.scrollTo(0, 0); lastView = v; }
+  }
+
+  /* ---------- review of mistakes ---------- */
+  function weakAdd(k) { save.weak[k] = Math.min(5, (save.weak[k] || 0) + 1); persist(); }
+  function weakFix(k) {
+    if (!save.weak[k]) return;
+    save.weak[k]--;
+    if (!save.weak[k]) delete save.weak[k];
+    persist();
+  }
+  function weakKana(sc) {
+    return allChars(sc).filter(function (c) { return save.weak['k:' + c.h]; })
+      .sort(function (a, b) { return save.weak['k:' + b.h] - save.weak['k:' + a.h]; });
+  }
+  function weakSents() { return SENTS.filter(function (x) { return save.weak['s:' + x.w.join('')]; }); }
+  function weakPool(sc) {
+    var pool = weakKana(sc);
+    if (pool.length < 4) {
+      var learned = [];
+      doneUnits(sc).forEach(function (u) { learned = learned.concat(charsOf(u, sc)); });
+      var rest = shuffle((learned.length ? learned : allChars(sc)).filter(function (c) { return !save.weak['k:' + c.h]; }));
+      pool = pool.concat(rest.slice(0, 4 - pool.length));
+    }
+    return pool;
+  }
+  function weakPicks() {
+    var w = shuffle(weakSents()).slice(0, TOTAL_S);
+    if (w.length < 5) {
+      var rest = shuffle(SENTS.filter(function (x) { return w.indexOf(x) < 0; }));
+      w = w.concat(rest.slice(0, 5 - w.length));
+    }
+    return w;
   }
 
   /* ---------- lesson logic ---------- */
@@ -942,6 +1273,8 @@ h2{margin:0;font-size:1.35rem}
       pool = [];
       doneUnits(sc).forEach(function (u) { pool = pool.concat(charsOf(u, sc)); });
       if (!pool.length) pool = charsOf(UNITS[0], sc);
+    } else if (uid === 'weak') {
+      pool = weakPool(sc);
     } else {
       pool = charsOf(unitById(uid), sc);
     }
@@ -953,7 +1286,7 @@ h2{margin:0;font-size:1.35rem}
     }
     items.length = TOTAL;
     var types = ['listen', 'read', 'write'], off = Math.floor(Math.random() * 3);
-    var L = { total: TOTAL, uid: uid, sc: sc, pool: pool, queue: [], done: 0, firstOK: 0, selected: null, phase: 'ask', ok: false, quit: false, cur: null, gain: 0 };
+    var L = { total: TOTAL, review: uid === 'weak', uid: uid, sc: sc, pool: pool, queue: [], done: 0, firstOK: 0, selected: null, phase: 'ask', ok: false, quit: false, cur: null, gain: 0 };
     items.forEach(function (it, i) { L.queue.push({ item: it, type: types[(i + off) % 3], first: true }); });
     S.L = L;
     S.view = 'lesson';
@@ -1023,12 +1356,13 @@ h2{margin:0;font-size:1.35rem}
     L.ok = !!hit;
     L.combo = L.ok ? (L.combo || 0) + 1 : 0;
     L.phase = 'fb';
+    sfx(L.ok ? 'ok' : 'bad');
     q.match = hit;
     q.ref = best.w;
     q.said = got;
     if (L.ok) { L.done++; if (q.first) L.firstOK++; }
     render();
-    speak(got.join(''));
+    speakSoon(got.join(''));
   }
 
   function talkNext() {
@@ -1037,9 +1371,9 @@ h2{margin:0;font-size:1.35rem}
     talkAdvance();
   }
 
-  function startSent() {
-    var picks = shuffle(SENTS).slice(0, TOTAL_S);
-    var L = { mode: 'sent', uid: 'sent', total: TOTAL_S, queue: [], done: 0, firstOK: 0, ans: [], phase: 'ask', ok: false, quit: false, cur: null, gain: 0 };
+  function startSent(review) {
+    var picks = review ? weakPicks() : shuffle(SENTS).slice(0, TOTAL_S);
+    var L = { mode: 'sent', uid: 'sent', review: !!review, total: picks.length, queue: [], done: 0, firstOK: 0, ans: [], phase: 'ask', ok: false, quit: false, cur: null, gain: 0 };
     picks.forEach(function (s, i) { L.queue.push({ s: s, type: i % 2 ? 'listen' : 'build', first: true }); });
     L.queue = shuffle(L.queue);
     S.L = L;
@@ -1062,6 +1396,8 @@ h2{margin:0;font-size:1.35rem}
     L.ok = L.ans.map(function (id) { return q.tokens[id].w; }).join('|') === q.s.w.join('|');
     L.phase = 'fb';
     L.combo = L.ok ? (L.combo || 0) + 1 : 0;
+    sfx(L.ok ? 'ok' : 'bad');
+    if (!L.ok) weakAdd('s:' + q.s.w.join('')); else if (q.first) weakFix('s:' + q.s.w.join(''));
     if (L.ok) {
       L.done++;
       if (q.first) L.firstOK++;
@@ -1069,7 +1405,7 @@ h2{margin:0;font-size:1.35rem}
       L.queue.push({ s: q.s, type: q.type === 'listen' ? 'build' : 'listen', first: false });
     }
     render();
-    speak(q.s.w.join(''));
+    speakSoon(q.s.w.join(''));
   }
 
   function nextQ() {
@@ -1092,6 +1428,8 @@ h2{margin:0;font-size:1.35rem}
     L.ok = ok;
     L.combo = ok ? (L.combo || 0) + 1 : 0;
     L.phase = 'fb';
+    sfx(ok ? 'ok' : 'bad');
+    if (!ok) weakAdd('k:' + q.item.h); else if (q.first) weakFix('k:' + q.item.h);
     if (ok) {
       L.done++;
       if (q.first) L.firstOK++;
@@ -1100,7 +1438,7 @@ h2{margin:0;font-size:1.35rem}
       L.queue.push({ item: q.item, type: order[(order.indexOf(q.type) + 1) % 3], first: false });
     }
     render();
-    speak(q.item.h);
+    speakSoon(q.item.h);
   }
 
   function next() {
@@ -1112,10 +1450,12 @@ h2{margin:0;font-size:1.35rem}
 
   function finish() {
     var L = S.L, k = L.mode === 'sent' ? 'sent' : L.mode === 'talk' ? 'talk-' + L.uid : L.sc + '-' + L.uid;
-    var d = save.done[k] || { runs: 0, best: 0 };
-    d.runs++;
-    d.best = Math.max(d.best, L.firstOK);
-    save.done[k] = d;
+    if (!L.review) {
+      var d = save.done[k] || { runs: 0, best: 0 };
+      d.runs++;
+      d.best = Math.max(d.best, L.firstOK);
+      save.done[k] = d;
+    }
     L.gain = L.firstOK * 10 + (L.firstOK === L.total ? 20 : 0);
     save.xp += L.gain;
     var today = ymd(new Date());
@@ -1128,6 +1468,7 @@ h2{margin:0;font-size:1.35rem}
     persist();
     S.view = 'result';
     render();
+    sfx('done');
   }
 
   /* slide a re-created element from where its old copy was (the token "flies" to its new place) */
@@ -1149,21 +1490,25 @@ h2{margin:0;font-size:1.35rem}
     else if (a === 'unit') { S.unit = el.getAttribute('data-id'); S.view = 'unit'; render(); }
     else if (a === 'mix') { startLesson('mix'); }
     else if (a === 'sent') { startSent(); }
+    else if (a === 'review') { S.view = 'review'; render(); }
+    else if (a === 'revk') { startLesson('weak'); }
+    else if (a === 'revs') { startSent(true); }
+    else if (a === 'sfx') { save.mute = !save.mute; persist(); render(); sfx('ok'); }
     else if (a === 'talks') { S.view = 'talks'; render(); }
     else if (a === 'talk') { startTalk(el.getAttribute('data-id')); }
-    else if (a === 'tok') { if (S.L.phase === 'ask') { var r0 = el.getBoundingClientRect(), tid = +el.getAttribute('data-i'); S.L.ans.push(tid); render(); flyFrom(r0, '.s-ans .tok[data-i="' + tid + '"]'); } }
-    else if (a === 'untok') { if (S.L.phase === 'ask') { var r1 = el.getBoundingClientRect(), ui = +el.getAttribute('data-i'); S.L.ans = S.L.ans.filter(function (x) { return x !== ui; }); render(); flyFrom(r1, '.s-bank .tok[data-i="' + ui + '"]'); } }
+    else if (a === 'tok') { if (S.L.phase === 'ask') { sfx('tap'); var r0 = el.getBoundingClientRect(), tid = +el.getAttribute('data-i'); S.L.ans.push(tid); render(); flyFrom(r0, '.s-ans .tok[data-i="' + tid + '"]'); } }
+    else if (a === 'untok') { if (S.L.phase === 'ask') { sfx('tap'); var r1 = el.getBoundingClientRect(), ui = +el.getAttribute('data-i'); S.L.ans = S.L.ans.filter(function (x) { return x !== ui; }); render(); flyFrom(r1, '.s-bank .tok[data-i="' + ui + '"]'); } }
     else if (a === 'start') { startLesson(el.getAttribute('data-id')); }
     else if (a === 'home') { S.view = 'home'; render(); }
     else if (a === 'hear') { speak(el.getAttribute('data-t')); el.classList.remove('tap'); void el.offsetWidth; el.classList.add('tap'); }
     else if (a === 'test') { speak('あ'); }
-    else if (a === 'opt') { if (S.L.phase === 'ask') { S.L.selected = +el.getAttribute('data-i'); render(); } }
+    else if (a === 'opt') { if (S.L.phase === 'ask') { sfx('tap'); S.L.selected = +el.getAttribute('data-i'); render(); } }
     else if (a === 'check') { check(); }
     else if (a === 'next') { next(); }
     else if (a === 'quit') { S.L.quit = true; render(); }
     else if (a === 'quitNo') { S.L.quit = false; render(); }
     else if (a === 'quitYes') { S.view = 'home'; S.L = null; render(); }
-    else if (a === 'again') { if (S.L.mode === 'sent') startSent(); else if (S.L.mode === 'talk') startTalk(S.L.uid); else startLesson(S.L.uid); }
+    else if (a === 'again') { if (S.L.mode === 'sent') startSent(S.L.review); else if (S.L.mode === 'talk') startTalk(S.L.uid); else startLesson(S.L.uid); }
   });
 
   document.addEventListener('keydown', function (e) {
